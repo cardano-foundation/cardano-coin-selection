@@ -1,0 +1,73 @@
+{-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DerivingVia #-}
+
+-- |
+-- Copyright: © 2018-2020 IOHK
+-- License: Apache-2.0
+--
+-- Asset names, defined by the monetary policy script.
+--
+module Cardano.CoinSelection.Types.AssetName
+    ( AssetName (..)
+    , empty
+    , fromByteString
+    , maxLength
+    ) where
+
+import Prelude
+
+import Control.DeepSeq
+    ( NFData
+    )
+import Data.ByteString
+    ( ByteString
+    )
+import Data.Data
+    ( Data
+    )
+import Data.Hashable
+    ( Hashable
+    )
+import GHC.Generics
+    ( Generic
+    )
+import Quiet
+    ( Quiet (..)
+    )
+
+import qualified Data.ByteString as BS
+
+-- | Asset names, defined by the monetary policy script.
+newtype AssetName =
+    -- | Construct an 'AssetName' without any validation.
+    UnsafeAssetName { unAssetName :: ByteString }
+    deriving stock (Data, Eq, Ord, Generic)
+    deriving (Read, Show) via (Quiet AssetName)
+    deriving anyclass Hashable
+
+instance NFData AssetName
+
+-- | Construct an 'AssetName', validating that the length does not exceed
+--   'maxLength'.
+--
+fromByteString :: ByteString -> Either String AssetName
+fromByteString bs
+    | BS.length bs <= maxLength = Right $ UnsafeAssetName bs
+    | otherwise = Left $ "AssetName length " ++ show (BS.length bs)
+        ++ " exceeds maximum of " ++ show maxLength
+
+-- | The empty asset name.
+--
+-- Asset names may be empty, where a monetary policy script only mints a single
+-- asset, or where one asset should be considered as the "default" token for the
+-- policy.
+--
+empty :: AssetName
+empty = UnsafeAssetName ""
+
+-- | The maximum length of a valid asset name.
+--
+maxLength :: Int
+maxLength = 32

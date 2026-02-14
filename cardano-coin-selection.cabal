@@ -1,0 +1,96 @@
+cabal-version: 2.2
+name:          cardano-coin-selection
+version:       0.1.0.0
+synopsis:      Coin selection algorithms for the Cardano blockchain.
+description:
+  Self-contained coin selection library extracted from
+  <https://github.com/cardano-foundation/cardano-wallet cardano-wallet>.
+  .
+  Provides balance-aware coin selection, collateral selection, and UTxO
+  index / selection data structures. Ships its own lightweight primitive
+  types (Coin, TokenBundle, TokenMap, etc.) so it has zero Cardano
+  ecosystem dependencies — only Hackage packages.
+
+homepage:      https://github.com/cardano-foundation/cardano-coin-selection
+bug-reports:   https://github.com/cardano-foundation/cardano-coin-selection/issues
+author:        Cardano Foundation (High Assurance Lab)
+maintainer:    hal@cardanofoundation.org
+copyright:     2018-2022 IOHK, 2023-2026 Cardano Foundation
+license:       Apache-2.0
+license-file:  LICENSE
+category:      Blockchain, Cardano
+build-type:    Simple
+
+common language
+  default-language:   Haskell2010
+  default-extensions:
+    NoImplicitPrelude
+    OverloadedStrings
+
+common opts-lib
+  ghc-options: -Wall -Wcompat -fwarn-redundant-constraints
+
+  if flag(release)
+    ghc-options: -O2 -Werror
+
+common opts-exe
+  ghc-options: -threaded -rtsopts -Wall
+
+  if flag(release)
+    ghc-options: -O2 -Werror
+
+flag release
+  description: Enable optimization and `-Werror`
+  default:     False
+  manual:      True
+
+library
+  import:          language, opts-lib
+  hs-source-dirs:  lib
+  build-depends:
+    , base                       >=4.14      && <5
+    , bytestring                 >=0.10.6    && <0.13
+    , containers                 >=0.5       && <0.8
+    , deepseq                    >=1.4.4     && <1.6
+    , exact-combinatorics        >=0.2       && <0.3
+    , generic-lens               >=2.2.2.0   && <2.3
+    , generics-sop               >=0.5.1.4   && <0.6
+    , hashable                   >=1.3       && <1.6
+    , int-cast                   >=0.2.0.0   && <0.3
+    , lattices                   >=2.2       && <2.3
+    , math-functions             >=0.3.4.4   && <0.4
+    , memory                     >=0.15      && <0.20
+    , MonadRandom                >=0.6       && <0.7
+    , monoid-subclasses          >=1.2.5.1   && <1.3
+    , monoidmap                  >=0.0.1.6   && <0.1
+    , quiet                      >=0.2       && <0.3
+    , QuickCheck                 >=2.14      && <2.16
+    , safe                       >=0.3.19    && <0.4
+    , transformers               >=0.6.1.0   && <0.7
+
+  exposed-modules:
+    -- Coin selection algorithm
+    Cardano.CoinSelection
+    Cardano.CoinSelection.Balance
+    Cardano.CoinSelection.Balance.Gen
+    Cardano.CoinSelection.Collateral
+    Cardano.CoinSelection.Context
+    Cardano.CoinSelection.Size
+    Cardano.CoinSelection.UTxOIndex
+    Cardano.CoinSelection.UTxOIndex.Gen
+    Cardano.CoinSelection.UTxOIndex.Internal
+    Cardano.CoinSelection.UTxOSelection
+    Cardano.CoinSelection.UTxOSelection.Gen
+
+    -- Primitive types
+    Cardano.CoinSelection.Types.AssetId
+    Cardano.CoinSelection.Types.AssetName
+    Cardano.CoinSelection.Types.Coin
+    Cardano.CoinSelection.Types.Hash
+    Cardano.CoinSelection.Types.TokenBundle
+    Cardano.CoinSelection.Types.TokenMap
+    Cardano.CoinSelection.Types.TokenPolicyId
+    Cardano.CoinSelection.Types.TokenQuantity
+
+    -- Internal utilities
+    Cardano.CoinSelection.Internal.Numeric
