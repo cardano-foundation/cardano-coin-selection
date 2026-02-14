@@ -12,89 +12,84 @@ import Prelude
 import Cardano.CoinSelection.Types.TokenBundle
     ( TokenBundle
     )
+import Cardano.CoinSelection.Types.TokenBundle.Gen
+    ( genTokenBundleSmallRangePositive
+    , shrinkTokenBundleSmallRangePositive
+    )
 import Cardano.CoinSelection.UTxOIndex
     ( UTxOIndex
     )
 import Control.Monad
     ( replicateM
     )
-import Generics.SOP
-    ( NP (..)
-    )
 import Test.QuickCheck
     ( Gen
     , choose
+    , liftShrink2
     , listOf
     , shrinkList
     , shrinkMapBy
     )
 
--- TODO: These imports need cardano-wallet-test-utils or equivalent:
--- import Cardano.CoinSelection.Types.TokenBundle.Gen
---     ( genTokenBundleSmallRangePositive
---     , shrinkTokenBundleSmallRangePositive
---     )
--- import Test.QuickCheck.Extra
---     ( genericRoundRobinShrink
---     , (<:>)
---     , (<@>)
---     )
-
 import qualified Cardano.CoinSelection.UTxOIndex as UTxOIndex
-
--- TODO: The following generators and shrinkers depend on Gen modules
--- (genTokenBundleSmallRangePositive, shrinkTokenBundleSmallRangePositive)
--- and Test.QuickCheck.Extra (genericRoundRobinShrink, (<:>), (<@>)) from
--- cardano-wallet-test-utils.
--- These need to be provided by cardano-coin-selection or re-implemented.
 
 --------------------------------------------------------------------------------
 -- Indices generated according to the size parameter
 --------------------------------------------------------------------------------
 
-{- | Generates a random 'UTxOIndex'.
+-- | Generates a random 'UTxOIndex'.
+genUTxOIndex
+    :: forall u. (Ord u) => Gen u -> Gen (UTxOIndex u)
+genUTxOIndex genUTxO =
+    UTxOIndex.fromSequence <$> listOf genEntry
+  where
+    genEntry :: Gen (u, TokenBundle)
+    genEntry =
+        (,)
+            <$> genUTxO
+            <*> genTokenBundleSmallRangePositive
 
-TODO: Restore full implementation once genTokenBundleSmallRangePositive
-is available.
--}
-genUTxOIndex :: forall u. (Ord u) => Gen u -> Gen (UTxOIndex u)
-genUTxOIndex _genUTxO =
-    error
-        "genUTxOIndex: requires genTokenBundleSmallRangePositive from \
-        \cardano-wallet-test-utils"
-
-{- | Shrinks a 'UTxOIndex'.
-
-TODO: Restore full implementation once shrinkTokenBundleSmallRangePositive
-and Test.QuickCheck.Extra are available.
--}
+-- | Shrinks a 'UTxOIndex'.
 shrinkUTxOIndex
-    :: forall u. (Ord u) => (u -> [u]) -> UTxOIndex u -> [UTxOIndex u]
-shrinkUTxOIndex _shrinkUTxO _index = []
+    :: forall u
+     . (Ord u)
+    => (u -> [u])
+    -> UTxOIndex u
+    -> [UTxOIndex u]
+shrinkUTxOIndex shrinkUTxO =
+    shrinkMapBy
+        UTxOIndex.fromSequence
+        UTxOIndex.toList
+        (shrinkList shrinkEntry)
+  where
+    shrinkEntry :: (u, TokenBundle) -> [(u, TokenBundle)]
+    shrinkEntry =
+        liftShrink2
+            shrinkUTxO
+            shrinkTokenBundleSmallRangePositive
 
 --------------------------------------------------------------------------------
 -- Large indices
 --------------------------------------------------------------------------------
 
-{- | Generates a large random 'UTxOIndex'.
+-- | Generates a large random 'UTxOIndex'.
+genUTxOIndexLarge
+    :: (Ord u) => Gen u -> Gen (UTxOIndex u)
+genUTxOIndexLarge genUTxO =
+    genUTxOIndexLargeN genUTxO =<< choose (1024, 4096)
 
-TODO: Restore full implementation once genTokenBundleSmallRangePositive
-is available.
--}
-genUTxOIndexLarge :: (Ord u) => Gen u -> Gen (UTxOIndex u)
-genUTxOIndexLarge _genUTxO =
-    error
-        "genUTxOIndexLarge: requires genTokenBundleSmallRangePositive from \
-        \cardano-wallet-test-utils"
-
-{- | Generates a large random 'UTxOIndex' with a specified number of entries.
-
-TODO: Restore full implementation once genTokenBundleSmallRangePositive
-is available.
--}
+-- | Generates a large random 'UTxOIndex' with a specified number of entries.
 genUTxOIndexLargeN
-    :: forall u. (Ord u) => Gen u -> Int -> Gen (UTxOIndex u)
-genUTxOIndexLargeN _genUTxO _n =
-    error
-        "genUTxOIndexLargeN: requires genTokenBundleSmallRangePositive from \
-        \cardano-wallet-test-utils"
+    :: forall u
+     . (Ord u)
+    => Gen u
+    -> Int
+    -> Gen (UTxOIndex u)
+genUTxOIndexLargeN genUTxO n =
+    UTxOIndex.fromSequence <$> replicateM n genEntry
+  where
+    genEntry :: Gen (u, TokenBundle)
+    genEntry =
+        (,)
+            <$> genUTxO
+            <*> genTokenBundleSmallRangePositive
