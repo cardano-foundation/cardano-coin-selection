@@ -852,7 +852,8 @@ it's not usually necessary to call this function from ordinary application
 code, unless you suspect that a 'SelectionError' is incorrect in some way.
 -}
 verifySelectionError
-    :: (SelectionContext ctx) => VerifySelectionError (SelectionError ctx) ctx
+    :: (SelectionContext ctx)
+    => VerifySelectionError (SelectionError ctx) ctx
 verifySelectionError cs ps = \case
     SelectionBalanceErrorOf e ->
         verifySelectionBalanceError cs ps e

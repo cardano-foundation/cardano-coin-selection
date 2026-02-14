@@ -483,7 +483,8 @@ data SelectionSkeleton ctx = SelectionSkeleton
     deriving (Generic)
 
 deriving instance (SelectionContext ctx) => Eq (SelectionSkeleton ctx)
-deriving instance (SelectionContext ctx) => Show (SelectionSkeleton ctx)
+deriving instance
+    (SelectionContext ctx) => Show (SelectionSkeleton ctx)
 
 type SelectionResult = SelectionResultOf []
 
@@ -622,7 +623,8 @@ If there is a deficit, then this function returns zero.
 Use 'selectionDeltaCoin' if you wish to handle the case where there is
 a deficit.
 -}
-selectionSurplusCoin :: (Foldable f) => SelectionResultOf f ctx -> Coin
+selectionSurplusCoin
+    :: (Foldable f) => SelectionResultOf f ctx -> Coin
 selectionSurplusCoin result =
     case selectionDeltaCoin result of
         SelectionSurplus surplus -> surplus
@@ -787,7 +789,7 @@ performSelectionEmpty performSelectionFn constraints params =
             { extraCoinSource =
                 transform (<> dummyCoin) (const id) extraCoinSource
             , outputsToCover =
-                transform (const (dummyOutput :| [])) (const . id) outputsToCover
+                transform (const (dummyOutput :| [])) const outputsToCover
             }
 
     transformResult
