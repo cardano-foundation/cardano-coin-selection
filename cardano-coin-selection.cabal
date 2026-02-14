@@ -92,5 +92,46 @@ library
     Cardano.CoinSelection.Types.TokenPolicyId
     Cardano.CoinSelection.Types.TokenQuantity
 
+    -- Primitive type generators
+    Cardano.CoinSelection.Types.AssetId.Gen
+    Cardano.CoinSelection.Types.AssetName.Gen
+    Cardano.CoinSelection.Types.Coin.Gen
+    Cardano.CoinSelection.Types.TokenBundle.Gen
+    Cardano.CoinSelection.Types.TokenMap.Gen
+    Cardano.CoinSelection.Types.TokenPolicyId.Gen
+    Cardano.CoinSelection.Types.TokenQuantity.Gen
+
+    -- QuickCheck utilities
+    Cardano.CoinSelection.Gen.Extra
+
+    -- Test utilities
+    Cardano.CoinSelection.Test.Laws
+
     -- Internal utilities
     Cardano.CoinSelection.Internal.Numeric
+
+test-suite unit
+  import:          language, opts-exe
+  type:            exitcode-stdio-1.0
+  hs-source-dirs:  test/spec
+  main-is:         Spec.hs
+  other-modules:
+    Cardano.CoinSelection.CollateralSpec
+    Cardano.CoinSelection.UTxOIndexSpec
+    Cardano.CoinSelection.UTxOSelectionSpec
+  build-depends:
+    , base
+    , cardano-coin-selection
+    , containers
+    , generic-lens
+    , hspec                      >=2.8       && <2.12
+    , int-cast
+    , MonadRandom
+    , monoid-subclasses
+    , pretty-simple              >=4.0       && <4.2
+    , QuickCheck
+    , quickcheck-classes         >=0.6       && <0.7
+    , quickcheck-monadic         >=0.1       && <1.0
+    , quickcheck-quid            >=0.0.1     && <0.1
+  build-tool-depends:
+    hspec-discover:hspec-discover
