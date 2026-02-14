@@ -13,7 +13,7 @@ estimation, minting/burning, and collateral selection.
 | `Cardano.CoinSelection` | High-level entry point combining balance and collateral selection |
 | `Cardano.CoinSelection.Balance` | Random-Round-Robin algorithm for multi-asset UTxO sets |
 | `Cardano.CoinSelection.Collateral` | Dual-strategy collateral selection |
-| `Cardano.CoinSelection.UTxOIndex` | Asset-indexed UTxO set with O(1) asset lookup |
+| `Cardano.CoinSelection.UTxOIndex` | Asset-indexed UTxO set with efficient asset-indexed lookup |
 | `Cardano.CoinSelection.UTxOSelection` | Selected/leftover state machine |
 | `Cardano.CoinSelection.Context` | Type class for selection contexts |
 | `Cardano.CoinSelection.Size` | Token bundle size assessment |

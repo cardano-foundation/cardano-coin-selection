@@ -60,8 +60,8 @@ import Cardano.CoinSelection
     , performSelection
     )
 
-result :: Either (SelectionError MyContext) (Selection MyContext)
-result = runExceptT $ performSelection constraints params
+result <- runExceptT $ performSelection constraints params
+-- result :: Either (SelectionError MyContext) (Selection MyContext)
 ```
 
 The `performSelection` function:

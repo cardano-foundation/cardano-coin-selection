@@ -1,6 +1,6 @@
 # Partitioning Natural Numbers
 
-The `partitionNatural` function from `Cardano.Numeric.Util` distributes a
+The `partitionNatural` function from `Cardano.CoinSelection.Internal.Numeric` distributes a
 natural number into parts proportional to a list of weights. It is used
 throughout the coin selection algorithm to split quantities fairly.
 

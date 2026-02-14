@@ -24,13 +24,13 @@
   -- the formal specification of the Cardano ledger, including transaction
   validation rules that constrain coin selection.
 
-## Related libraries
+## Primitives
 
-- **`cardano-numeric`** -- provides `partitionNatural`, `equipartitionNatural`,
-  and `padCoalesce` used by the coin selection algorithm.
-
-- **`cardano-wallet-primitive`** -- provides `TokenMap`, `TokenBundle`, `Coin`,
-  and related types used throughout the library.
+This library ships its own primitive types and numeric utilities -- there are
+no external dependencies on `cardano-numeric` or `cardano-wallet-primitive`.
+Types such as `TokenMap`, `TokenBundle`, and `Coin`, as well as functions like
+`partitionNatural` and `equipartitionNatural`, are all defined within this
+package.
 
 ## Haddock documentation
 
@@ -43,5 +43,5 @@ code itself:
 | `Cardano.CoinSelection.Collateral` | Dual-strategy collateral selection |
 | `Cardano.CoinSelection.UTxOIndex.Internal` | Index invariants, selection filters |
 | `Cardano.CoinSelection.UTxOSelection` | State machine semantics |
-| `Cardano.Numeric.Util` | padCoalesce, partitionNatural proofs |
-| `Cardano.Wallet.Primitive.Types.TokenMap` | Partial ordering rationale |
+| `Cardano.CoinSelection.Internal.Numeric` | padCoalesce, partitionNatural proofs |
+| `Cardano.CoinSelection.Types.TokenMap` | Partial ordering rationale |
