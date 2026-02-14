@@ -43,10 +43,11 @@ genTokenPolicyIdLargeRange =
 testTokenPolicyIds :: [TokenPolicyId]
 testTokenPolicyIds = mkTokenPolicyId <$> [0 .. 15]
 
--- | Create a test token policy ID from a byte value.
---
--- Constructs a 28-byte hash by repeating the given byte.
+{- | Create a test token policy ID from a byte value.
+
+Constructs a 28-byte hash by repeating the given byte.
+-}
 mkTokenPolicyId :: Word -> TokenPolicyId
 mkTokenPolicyId w =
-    UnsafeTokenPolicyId . Hash . BS.pack
-        $ replicate 28 (fromIntegral w)
+    UnsafeTokenPolicyId . Hash . BS.pack $
+        replicate 28 (fromIntegral w)

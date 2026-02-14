@@ -3,15 +3,14 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingVia #-}
 
--- |
--- Copyright: © 2018-2020 IOHK
--- License: Apache-2.0
---
--- Represents an integral quantity of tokens.
---
+{- |
+Copyright: © 2018-2020 IOHK
+License: Apache-2.0
+
+Represents an integral quantity of tokens.
+-}
 module Cardano.CoinSelection.Types.TokenQuantity
-    (
-      -- * Type
+    ( -- * Type
       TokenQuantity (..)
 
       -- * Values
@@ -24,11 +23,12 @@ module Cardano.CoinSelection.Types.TokenQuantity
     , predZero
     , succ
     , difference
+    , equipartition
+    , partition
 
       -- * Tests
     , isNonZero
     , isZero
-
     ) where
 
 import Prelude hiding
@@ -37,6 +37,10 @@ import Prelude hiding
     , succ
     )
 
+import Cardano.CoinSelection.Internal.Numeric
+    ( equipartitionNatural
+    , partitionNatural
+    )
 import Control.DeepSeq
     ( NFData (..)
     )
@@ -45,6 +49,9 @@ import Data.Data
     )
 import Data.Hashable
     ( Hashable
+    )
+import Data.List.NonEmpty
+    ( NonEmpty
     )
 import Data.Maybe
     ( fromMaybe
@@ -86,17 +93,17 @@ import Quiet
 -- Type
 --------------------------------------------------------------------------------
 
--- | Represents an integral quantity of tokens.
---
--- At present, we use 'Natural' as our underlying type, as the only use case
--- for these quantities is to be included in token bundles held within
--- transaction outputs, and these must never be negative.
---
--- When we build support for minting and burning of tokens, we may wish to
--- parameterize this type and allow it to be instantiated with 'Integer'.
---
+{- | Represents an integral quantity of tokens.
+
+At present, we use 'Natural' as our underlying type, as the only use case
+for these quantities is to be included in token bundles held within
+transaction outputs, and these must never be negative.
+
+When we build support for minting and burning of tokens, we may wish to
+parameterize this type and allow it to be instantiated with 'Integer'.
+-}
 newtype TokenQuantity = TokenQuantity
-    { unTokenQuantity :: Natural }
+    {unTokenQuantity :: Natural}
     deriving stock (Data, Eq, Ord, Generic)
     deriving anyclass (NFData, Hashable)
     deriving (Read, Show) via Quiet TokenQuantity
@@ -119,47 +126,62 @@ zero = TokenQuantity 0
 add :: TokenQuantity -> TokenQuantity -> TokenQuantity
 add = (<>)
 
--- | Subtracts the second token quantity from the first.
---
--- Returns 'Nothing' if the first quantity is less than the second quantity.
---
+{- | Subtracts the second token quantity from the first.
+
+Returns 'Nothing' if the first quantity is less than the second quantity.
+-}
 subtract :: TokenQuantity -> TokenQuantity -> Maybe TokenQuantity
 subtract = (</>)
 
--- | Finds the predecessor of a given token quantity.
---
--- Returns 'Nothing' if the given quantity is zero.
---
+{- | Finds the predecessor of a given token quantity.
+
+Returns 'Nothing' if the given quantity is zero.
+-}
 pred :: TokenQuantity -> Maybe TokenQuantity
 pred = (`subtract` TokenQuantity 1)
 
--- | Finds the predecessor of a given token quantity.
---
--- Returns 'zero' if the given quantity is 'zero'.
---
--- Satisfies the following property:
---
--- >>> predZero x == x `difference` 1
---
+{- | Finds the predecessor of a given token quantity.
+
+Returns 'zero' if the given quantity is 'zero'.
+
+Satisfies the following property:
+
+>>> predZero x == x `difference` 1
+-}
 predZero :: TokenQuantity -> TokenQuantity
 predZero = fromMaybe zero . pred
 
 -- | Finds the successor of a given token quantity.
---
 succ :: TokenQuantity -> TokenQuantity
 succ = (`add` TokenQuantity 1)
 
--- | Subtracts the second token quantity from the first.
---
--- Returns 'zero' if the first quantity is less than the second quantity.
---
+{- | Subtracts the second token quantity from the first.
+
+Returns 'zero' if the first quantity is less than the second quantity.
+-}
 difference :: TokenQuantity -> TokenQuantity -> TokenQuantity
 difference = (<\>)
 
--- NOTE: equipartition, partition, and partitionDefault have been removed
--- because they depend on equipartitionNatural and partitionNatural from
--- Cardano.Numeric.Util, which are not included in this package.
--- These functions remain in cardano-wallet.
+-- | Partitions a token quantity into equal parts.
+equipartition
+    :: TokenQuantity
+    -> NonEmpty a
+    -> NonEmpty TokenQuantity
+equipartition q =
+    fmap TokenQuantity
+        . equipartitionNatural (unTokenQuantity q)
+
+{- | Partitions a token quantity proportionally according to the given
+  weights.
+-}
+partition
+    :: TokenQuantity
+    -> NonEmpty TokenQuantity
+    -> Maybe (NonEmpty TokenQuantity)
+partition c =
+    fmap (fmap TokenQuantity)
+        . partitionNatural (unTokenQuantity c)
+        . fmap unTokenQuantity
 
 --------------------------------------------------------------------------------
 -- Tests

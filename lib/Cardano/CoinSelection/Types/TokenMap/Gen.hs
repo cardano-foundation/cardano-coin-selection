@@ -39,30 +39,34 @@ genTokenMap = sized $ \size -> do
     TokenMap.fromFlatList
         <$> replicateM assetCount genAssetQuantity
   where
-    genAssetQuantity = (,)
-        <$> genAssetId
-        <*> genTokenQuantity
+    genAssetQuantity =
+        (,)
+            <$> genAssetId
+            <*> genTokenQuantity
 
 genTokenMapSmallRange :: Gen TokenMap
 genTokenMapSmallRange = do
-    assetCount <- oneof
-        [ pure 0
-        , pure 1
-        , choose (2, 16)
-        ]
+    assetCount <-
+        oneof
+            [ pure 0
+            , pure 1
+            , choose (2, 16)
+            ]
     TokenMap.fromFlatList
         <$> replicateM assetCount genAssetQuantity
   where
-    genAssetQuantity = (,)
-        <$> genAssetId
-        <*> genTokenQuantity
+    genAssetQuantity =
+        (,)
+            <$> genAssetId
+            <*> genTokenQuantity
 
 shrinkTokenMap :: TokenMap -> [TokenMap]
-shrinkTokenMap
-    = fmap TokenMap.fromFlatList
-    . shrinkList shrinkAssetQuantity
-    . TokenMap.toFlatList
+shrinkTokenMap =
+    fmap TokenMap.fromFlatList
+        . shrinkList shrinkAssetQuantity
+        . TokenMap.toFlatList
   where
-    shrinkAssetQuantity (a, q) = shrinkInterleaved
-        (a, shrinkAssetId)
-        (q, shrinkTokenQuantity)
+    shrinkAssetQuantity (a, q) =
+        shrinkInterleaved
+            (a, shrinkAssetId)
+            (q, shrinkTokenQuantity)
