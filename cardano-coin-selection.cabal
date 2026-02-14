@@ -1,7 +1,7 @@
-cabal-version: 2.2
-name:          cardano-coin-selection
-version:       0.1.0.0
-synopsis:      Coin selection algorithms for the Cardano blockchain.
+cabal-version:      2.2
+name:               cardano-coin-selection
+version:            0.1.0.0
+synopsis:           Coin selection algorithms for the Cardano blockchain.
 description:
   Self-contained coin selection library extracted from
   <https://github.com/cardano-foundation/cardano-wallet cardano-wallet>.
@@ -17,13 +17,20 @@ homepage:
 bug-reports:
   https://github.com/cardano-foundation/cardano-coin-selection/issues
 
-author:        Cardano Foundation (High Assurance Lab)
-maintainer:    hal@cardanofoundation.org
-copyright:     2018-2022 IOHK, 2023-2026 Cardano Foundation
-license:       Apache-2.0
-license-file:  LICENSE
-category:      Blockchain, Cardano
-build-type:    Simple
+author:
+  Jonathan Knowles <jonathan.knowles@iohk.io>,
+  Matthias Benkort <matthias.benkort@iohk.io>,
+  Pawel Jakubas <pawel.jakubas@iohk.io>,
+  Paolo Veronelli <paolo.veronelli@cardanofoundation.org>,
+  Cardano Foundation (High Assurance Lab)
+
+maintainer:         hal@cardanofoundation.org
+copyright:          2018-2022 IOHK, 2023-2026 Cardano Foundation
+license:            Apache-2.0
+license-file:       LICENSE
+category:           Blockchain, Cardano
+build-type:         Simple
+extra-source-files: NOTICE
 
 common language
   default-language:   Haskell2010
