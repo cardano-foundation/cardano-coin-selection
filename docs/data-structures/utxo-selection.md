@@ -62,9 +62,14 @@ The `select` function moves a single UTxO from the leftover set to the
 selected set:
 
 ```haskell
-select :: Ord u
-    => u -> UTxOSelection u -> Maybe (UTxOSelectionNonEmpty u)
+select :: (IsUTxOSelection s u, Ord u)
+    => u -> s u -> Maybe (UTxOSelectionNonEmpty u)
 ```
+
+!!! note "Polymorphic via `IsUTxOSelection`"
+    `select` is polymorphic over both `UTxOSelection` and
+    `UTxOSelectionNonEmpty` via the `IsUTxOSelection` type class, so it can
+    be called on either type.
 
 Key properties:
 

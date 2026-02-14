@@ -35,13 +35,14 @@ data UTxOIndex u = UTxOIndex
 
 ## Selection filters
 
-The index supports three selection filters, tried in priority order:
+The index supports four selection filters, tried in priority order:
 
 ```haskell
 data SelectionFilter asset
     = SelectSingleton asset    -- UTxO with only this asset
     | SelectPairWith  asset    -- UTxO with this asset + one other
     | SelectAnyWith   asset    -- Any UTxO with this asset
+    | SelectAny                -- Any UTxO regardless of assets
 ```
 
 ### Why this priority?
@@ -54,12 +55,13 @@ damage" -- accidentally pulling in large quantities of unrelated assets.
 | `SelectSingleton` | None | Ideal: clean, targeted selection |
 | `SelectPairWith` | Minimal (one extra asset) | Good compromise |
 | `SelectAnyWith` | Potentially high | Fallback when others fail |
+| `SelectAny` | Unpredictable | Last resort: any UTxO at all |
 
 ## Random selection
 
 ```haskell
 selectRandom
-    :: MonadRandom m
+    :: (MonadRandom m, Ord u)
     => UTxOIndex u
     -> SelectionFilter Asset
     -> m (Maybe ((u, TokenBundle), UTxOIndex u))
@@ -81,7 +83,7 @@ Tries a list of filters in order, returning the first successful selection:
 
 ```haskell
 selectRandomWithPriority
-    :: MonadRandom m
+    :: (MonadRandom m, Ord u)
     => UTxOIndex u
     -> NonEmpty (SelectionFilter Asset)
     -> m (Maybe ((u, TokenBundle), UTxOIndex u))
@@ -97,8 +99,8 @@ selectRandomWithPriority
 | `lookup` | $O(\log n)$ | Look up a UTxO by id |
 | `balance` | $O(1)$ | Total balance of all entries |
 | `size` | $O(1)$ | Number of entries |
-| `assets` | $O(1)$ | Set of all asset identifiers |
-| `selectRandom` | $O(\log n)$ | Random selection with filter |
+| `assets` | $O(k)$ | Set of all asset identifiers ($k$ = distinct assets) |
+| `selectRandom` | $O(\log n \cdot a)$ | Random selection with filter |
 
 where $n$ is the number of UTxOs and $a$ is the average number of assets per
 UTxO.

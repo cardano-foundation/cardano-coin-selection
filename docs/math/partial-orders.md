@@ -107,7 +107,7 @@ The partial order is fundamental to the change generation algorithm:
 
 ### The `inAscendingPartialOrder` predicate
 
-The `Cardano.Numeric.Util` module provides:
+The `Cardano.CoinSelection.Internal.Numeric` module provides:
 
 ```haskell
 inAscendingPartialOrder :: (Foldable f, PartialOrd a) => f a -> Bool

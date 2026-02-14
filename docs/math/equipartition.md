@@ -36,7 +36,8 @@ The result is sorted in ascending order.
 
 ```haskell
 equipartitionNatural n count =
-    NE.reverse $ unsafePartitionNatural n (1 <$ count)
+    NE.reverse $ fromMaybe zeroError $
+        partitionNatural n (1 <$ count)
 ```
 
 ## equipartitionQuantitiesWithUpperBound
