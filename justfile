@@ -14,6 +14,7 @@ format:
         fourmolu -i lib test
     done
     cabal-fmt -i *.cabal
+    nixfmt flake.nix nix/*.nix
 
 # Run hlint
 hlint:
@@ -45,3 +46,4 @@ CI:
     just unit
     fourmolu -m check lib test
     hlint lib test
+    nixfmt --check flake.nix nix/*.nix
