@@ -6,6 +6,14 @@ set unstable := true
 default:
     @just --list
 
+# Serve docs locally
+docs-serve:
+    mkdocs serve
+
+# Build docs (strict mode)
+docs-build:
+    mkdocs build --strict
+
 # Format all source files
 format:
     #!/usr/bin/env bash

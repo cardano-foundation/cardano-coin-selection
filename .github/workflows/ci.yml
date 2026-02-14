@@ -34,3 +34,12 @@ jobs:
 
       - name: Nixfmt
         run: nix develop --command nixfmt --check flake.nix nix/*.nix
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: paolino/dev-assets/setup-nix@v0.0.1
+        with:
+          cachix-auth-token: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+      - run: nix develop github:paolino/dev-assets?dir=mkdocs -c mkdocs build --strict
