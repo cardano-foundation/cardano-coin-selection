@@ -25,3 +25,12 @@ jobs:
 
       - name: Test
         run: nix build .#unit-tests --quiet
+
+      - name: Fourmolu
+        run: nix develop --command fourmolu -m check lib test
+
+      - name: HLint
+        run: nix develop --command hlint lib test
+
+      - name: Nixfmt
+        run: nix develop --command nixfmt --check flake.nix nix/*.nix
