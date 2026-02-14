@@ -1,4 +1,5 @@
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE TypeApplications #-}
 
 module Cardano.CoinSelection.Balance.Gen
     ( genSelectionSkeleton
@@ -17,11 +18,24 @@ import Cardano.CoinSelection.Balance
 import Cardano.CoinSelection.Context
     ( SelectionContext (..)
     )
+import Cardano.CoinSelection.Gen.Extra
+    ( genericRoundRobinShrink
+    , (<:>)
+    , (<@>)
+    )
+import Cardano.CoinSelection.Types.AssetId.Gen
+    ( genAssetId
+    , shrinkAssetId
+    )
 import Cardano.CoinSelection.Types.Coin
     ( Coin (..)
     )
 import Cardano.CoinSelection.Types.TokenBundle
     ( TokenBundle
+    )
+import Cardano.CoinSelection.Types.TokenBundle.Gen
+    ( genTokenBundleSmallRange
+    , shrinkTokenBundleSmallRange
     )
 import Generics.SOP
     ( NP (..)
@@ -38,58 +52,63 @@ import Test.QuickCheck
     , suchThat
     )
 
--- TODO: These imports need cardano-wallet-test-utils or equivalent:
--- import Cardano.CoinSelection.Types.AssetId.Gen
---     ( genAssetId
---     , shrinkAssetId
---     )
--- import Cardano.CoinSelection.Types.TokenBundle.Gen
---     ( genTokenBundleSmallRange
---     , shrinkTokenBundleSmallRange
---     )
--- import Test.QuickCheck.Extra
---     ( genericRoundRobinShrink
---     , (<:>)
---     , (<@>)
---     )
-
 import qualified Cardano.CoinSelection.Types.TokenBundle as TokenBundle
 import qualified Data.Set as Set
-
--- TODO: The following generators and shrinkers depend on Gen modules
--- (genAssetId, shrinkAssetId, genTokenBundleSmallRange,
--- shrinkTokenBundleSmallRange) and Test.QuickCheck.Extra
--- (genericRoundRobinShrink, (<:>), (<@>)) from cardano-wallet-test-utils.
--- These need to be provided by cardano-coin-selection or re-implemented.
 
 --------------------------------------------------------------------------------
 -- Selection skeletons
 --------------------------------------------------------------------------------
 
-{- | Generates a random 'SelectionSkeleton'.
-
-TODO: Restore full implementation once Gen modules for AssetId and
-TokenBundle are available.
--}
 genSelectionSkeleton
     :: Gen (Address ctx) -> Gen (SelectionSkeleton ctx)
-genSelectionSkeleton _genAddress =
-    error
-        "genSelectionSkeleton: requires genAssetId, genTokenBundleSmallRange, \
-        \and genAddress generators from cardano-wallet-test-utils"
+genSelectionSkeleton genAddress =
+    SelectionSkeleton
+        <$> genSkeletonInputCount
+        <*> genSkeletonOutputs
+        <*> genSkeletonChange
+  where
+    genSkeletonInputCount =
+        getNonNegative <$> arbitrary @(NonNegative Int)
+    genSkeletonOutputs =
+        listOf genSkeletonOutput
+    genSkeletonOutput =
+        (,)
+            <$> genAddress
+            <*> genTokenBundleSmallRange
+                `suchThat` tokenBundleHasNonZeroCoin
+    genSkeletonChange =
+        listOf (Set.fromList <$> listOf genAssetId)
 
-{- | Shrinks a 'SelectionSkeleton'.
-
-TODO: Restore full implementation once Gen modules and
-Test.QuickCheck.Extra are available.
--}
 shrinkSelectionSkeleton
     :: (Address ctx -> [Address ctx])
     -> (SelectionSkeleton ctx -> [SelectionSkeleton ctx])
-shrinkSelectionSkeleton _shrinkAddress _skeleton = []
+shrinkSelectionSkeleton shrinkAddress =
+    genericRoundRobinShrink
+        <@> shrinkSkeletonInputCount
+        <:> shrinkSkeletonOutputs
+        <:> shrinkSkeletonChange
+        <:> Nil
+  where
+    shrinkSkeletonInputCount =
+        shrink @Int
+    shrinkSkeletonOutputs =
+        shrinkList shrinkSkeletonOutput
+    shrinkSkeletonOutput =
+        genericRoundRobinShrink
+            <@> shrinkAddress
+            <:> filter tokenBundleHasNonZeroCoin
+            . shrinkTokenBundleSmallRange
+            <:> Nil
+    shrinkSkeletonChange =
+        shrinkList $
+            shrinkMapBy
+                Set.fromList
+                Set.toList
+                (shrinkList shrinkAssetId)
 
 tokenBundleHasNonZeroCoin :: TokenBundle -> Bool
-tokenBundleHasNonZeroCoin b = TokenBundle.getCoin b /= Coin 0
+tokenBundleHasNonZeroCoin b =
+    TokenBundle.getCoin b /= Coin 0
 
 --------------------------------------------------------------------------------
 -- Selection strategies
@@ -98,10 +117,8 @@ tokenBundleHasNonZeroCoin b = TokenBundle.getCoin b /= Coin 0
 genSelectionStrategy :: Gen SelectionStrategy
 genSelectionStrategy = arbitraryBoundedEnum
 
-shrinkSelectionStrategy :: SelectionStrategy -> [SelectionStrategy]
+shrinkSelectionStrategy
+    :: SelectionStrategy -> [SelectionStrategy]
 shrinkSelectionStrategy = \case
-    -- Shrinking from "optimal" to "minimal" should increase the likelihood of
-    -- making a successful selection, as the "minimal" strategy is designed to
-    -- generate smaller selections.
     SelectionStrategyMinimal -> []
     SelectionStrategyOptimal -> [SelectionStrategyMinimal]
