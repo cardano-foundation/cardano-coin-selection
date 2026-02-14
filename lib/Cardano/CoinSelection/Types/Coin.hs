@@ -3,11 +3,8 @@
 {-# LANGUAGE ExplicitForAll #-}
 
 {- |
-Copyright: © 2018-2020 IOHK
+Copyright: © 2018-2026 IOHK, 2024-2026 Cardano Foundation
 License: Apache-2.0
-
-This module provides the 'Coin' data type, which represents a quantity of
-lovelace.
 -}
 module Cardano.CoinSelection.Types.Coin
     ( -- * Type

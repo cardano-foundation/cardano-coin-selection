@@ -7,18 +7,8 @@
 {-# LANGUAGE UndecidableInstances #-}
 
 {- |
-Copyright: © 2018-2020 IOHK
+Copyright: © 2018-2026 IOHK, 2024-2026 Cardano Foundation
 License: Apache-2.0
-
-Provides the 'TokenMap' type, which represents a map of named non-ada
-token quantities scoped by token policy.
-
-The 'TokenMap' type does not provide a way to store ada quantities. If you
-also need to store ada quantities, use the 'TokenBundle' type.
-
-This module is meant to be imported qualified. For example:
-
->>> import qualified Cardano.CoinSelection.Types.TokenMap as TM
 -}
 module Cardano.CoinSelection.Types.TokenMap
     ( -- * Type

@@ -11,8 +11,12 @@ description:
   types (Coin, TokenBundle, TokenMap, etc.) so it has zero Cardano
   ecosystem dependencies — only Hackage packages.
 
-homepage:      https://github.com/cardano-foundation/cardano-coin-selection
-bug-reports:   https://github.com/cardano-foundation/cardano-coin-selection/issues
+homepage:
+  https://github.com/cardano-foundation/cardano-coin-selection
+
+bug-reports:
+  https://github.com/cardano-foundation/cardano-coin-selection/issues
+
 author:        Cardano Foundation (High Assurance Lab)
 maintainer:    hal@cardanofoundation.org
 copyright:     2018-2022 IOHK, 2023-2026 Cardano Foundation
@@ -48,86 +52,82 @@ library
   import:          language, opts-lib
   hs-source-dirs:  lib
   build-depends:
-    , base                       >=4.14      && <5
-    , bytestring                 >=0.10.6    && <0.13
-    , commutative-semigroups      >=0.2       && <0.3
-    , containers                 >=0.5       && <0.8
-    , deepseq                    >=1.4.4     && <1.6
-    , exact-combinatorics        >=0.2       && <0.3
-    , generic-lens               >=2.2.2.0   && <2.3
-    , generics-sop               >=0.5.1.4   && <0.6
-    , hashable                   >=1.3       && <1.6
-    , hspec                      >=2.8       && <2.12
-    , int-cast                   >=0.2.0.0   && <0.3
-    , lattices                   >=2.2       && <2.3
-    , math-functions             >=0.3.4.4   && <0.4
-    , memory                     >=0.15      && <0.20
-    , MonadRandom                >=0.6       && <0.7
-    , random                    >=1.2       && <1.3
-    , monoid-subclasses          >=1.2.5.1   && <1.3
-    , monoidmap                  >=0.0.1.6   && <0.1
-    , quiet                      >=0.2       && <0.3
-    , pretty-simple              >=4.0       && <4.2
-    , QuickCheck                 >=2.14      && <2.16
-    , quickcheck-classes         >=0.6       && <0.7
-    , safe                       >=0.3.19    && <0.4
-    , text                       >=1.2       && <2.2
-    , transformers               >=0.6.1.0   && <0.7
+    , base                    >=4.14    && <5
+    , bytestring              >=0.10.6  && <0.13
+    , commutative-semigroups  >=0.2     && <0.3
+    , containers              >=0.5     && <0.8
+    , deepseq                 >=1.4.4   && <1.6
+    , exact-combinatorics     >=0.2     && <0.3
+    , generic-lens            >=2.2.2.0 && <2.3
+    , generics-sop            >=0.5.1.4 && <0.6
+    , hashable                >=1.3     && <1.6
+    , hspec                   >=2.8     && <2.12
+    , int-cast                >=0.2.0.0 && <0.3
+    , lattices                >=2.2     && <2.3
+    , math-functions          >=0.3.4.4 && <0.4
+    , memory                  >=0.15    && <0.20
+    , MonadRandom             >=0.6     && <0.7
+    , monoid-subclasses       >=1.2.5.1 && <1.3
+    , monoidmap               >=0.0.1.6 && <0.1
+    , pretty-simple           >=4.0     && <4.2
+    , QuickCheck              >=2.14    && <2.16
+    , quickcheck-classes      >=0.6     && <0.7
+    , quiet                   >=0.2     && <0.3
+    , random                  >=1.2     && <1.3
+    , safe                    >=0.3.19  && <0.4
+    , text                    >=1.2     && <2.2
+    , transformers            >=0.6.1.0 && <0.7
 
   exposed-modules:
-    -- Coin selection algorithm
     Cardano.CoinSelection
     Cardano.CoinSelection.Balance
     Cardano.CoinSelection.Balance.Gen
     Cardano.CoinSelection.Collateral
     Cardano.CoinSelection.Context
+    Cardano.CoinSelection.Gen.Extra
+    Cardano.CoinSelection.Internal.Numeric
     Cardano.CoinSelection.Size
+    Cardano.CoinSelection.Test.Laws
+    Cardano.CoinSelection.Types.AssetId
+    Cardano.CoinSelection.Types.AssetId.Gen
+    Cardano.CoinSelection.Types.AssetName
+    Cardano.CoinSelection.Types.AssetName.Gen
+    Cardano.CoinSelection.Types.Coin
+    Cardano.CoinSelection.Types.Coin.Gen
+    Cardano.CoinSelection.Types.Hash
+    Cardano.CoinSelection.Types.TokenBundle
+    Cardano.CoinSelection.Types.TokenBundle.Gen
+    Cardano.CoinSelection.Types.TokenMap
+    Cardano.CoinSelection.Types.TokenMap.Gen
+    Cardano.CoinSelection.Types.TokenPolicyId
+    Cardano.CoinSelection.Types.TokenPolicyId.Gen
+    Cardano.CoinSelection.Types.TokenQuantity
+    Cardano.CoinSelection.Types.TokenQuantity.Gen
     Cardano.CoinSelection.UTxOIndex
     Cardano.CoinSelection.UTxOIndex.Gen
     Cardano.CoinSelection.UTxOIndex.Internal
     Cardano.CoinSelection.UTxOSelection
     Cardano.CoinSelection.UTxOSelection.Gen
-
-    -- Primitive types
-    Cardano.CoinSelection.Types.AssetId
-    Cardano.CoinSelection.Types.AssetName
-    Cardano.CoinSelection.Types.Coin
-    Cardano.CoinSelection.Types.Hash
-    Cardano.CoinSelection.Types.TokenBundle
-    Cardano.CoinSelection.Types.TokenMap
-    Cardano.CoinSelection.Types.TokenPolicyId
-    Cardano.CoinSelection.Types.TokenQuantity
-
-    -- Primitive type generators
-    Cardano.CoinSelection.Types.AssetId.Gen
-    Cardano.CoinSelection.Types.AssetName.Gen
-    Cardano.CoinSelection.Types.Coin.Gen
-    Cardano.CoinSelection.Types.TokenBundle.Gen
-    Cardano.CoinSelection.Types.TokenMap.Gen
-    Cardano.CoinSelection.Types.TokenPolicyId.Gen
-    Cardano.CoinSelection.Types.TokenQuantity.Gen
-
-    -- QuickCheck utilities
-    Cardano.CoinSelection.Gen.Extra
-
-    -- Test utilities
-    Cardano.CoinSelection.Test.Laws
-
-    -- Internal utilities
-    Cardano.CoinSelection.Internal.Numeric
     Control.Monad.Random.NonRandom
 
+-- Coin selection algorithm
+-- Primitive types
+-- Primitive type generators
+-- QuickCheck utilities
+-- Test utilities
+-- Internal utilities
 test-suite unit
-  import:          language, opts-exe
-  type:            exitcode-stdio-1.0
-  hs-source-dirs:  test/spec
-  main-is:         Spec.hs
+  import:             language, opts-exe
+  type:               exitcode-stdio-1.0
+  hs-source-dirs:     test/spec
+  main-is:            Spec.hs
   other-modules:
     Cardano.CoinSelection.BalanceSpec
     Cardano.CoinSelection.CollateralSpec
     Cardano.CoinSelection.UTxOIndexSpec
     Cardano.CoinSelection.UTxOSelectionSpec
     Cardano.CoinSelectionSpec
+
   build-depends:
     , base
     , bytestring
@@ -135,18 +135,18 @@ test-suite unit
     , containers
     , generic-lens
     , generics-sop
-    , hspec                      >=2.8       && <2.12
-    , hspec-core                 >=2.8       && <2.12
+    , hspec                   >=2.8   && <2.12
+    , hspec-core              >=2.8   && <2.12
     , int-cast
     , lattices
     , MonadRandom
     , monoid-subclasses
-    , pretty-simple              >=4.0       && <4.2
+    , pretty-simple           >=4.0   && <4.2
     , QuickCheck
-    , quickcheck-classes         >=0.6       && <0.7
-    , quickcheck-quid            >=0.0.1     && <0.1
+    , quickcheck-classes      >=0.6   && <0.7
+    , quickcheck-quid         >=0.0.1 && <0.1
     , safe
     , text
     , transformers
-  build-tool-depends:
-    hspec-discover:hspec-discover
+
+  build-tool-depends: hspec-discover:hspec-discover

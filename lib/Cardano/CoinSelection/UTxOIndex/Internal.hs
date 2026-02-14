@@ -9,18 +9,8 @@
 {- HLINT ignore "Use &&" -}
 
 {- |
-Copyright: © 2018-2021 IOHK
+Copyright: © 2018-2026 IOHK, 2024-2026 Cardano Foundation
 License: Apache-2.0
-
-Provides internal functions for the 'UTxOIndex' type, which indexes a UTxO
-set by asset identifier.
-
-The index makes it possible to efficiently compute the subset of a UTxO set
-containing a particular asset, or to select just a single UTxO containing a
-particular asset, without having to search linearly through the entire UTxO
-set.
-
-See the documentation for 'UTxOIndex' for more details.
 -}
 module Cardano.CoinSelection.UTxOIndex.Internal
     ( ----------------------------------------------------------------------------

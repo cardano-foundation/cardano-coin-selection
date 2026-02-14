@@ -6,15 +6,8 @@
 {-# LANGUAGE UndecidableInstances #-}
 
 {- |
-Copyright: © 2018-2020 IOHK
+Copyright: © 2018-2026 IOHK, 2024-2026 Cardano Foundation
 License: Apache-2.0
-
-Provides the 'TokenBundle' type, which combines a 'Coin' (lovelace) value
-with a map of named token quantities, scoped by token policy.
-
-This module is meant to be imported qualified. For example:
-
->>> import qualified Cardano.CoinSelection.Types.TokenBundle as TB
 -}
 module Cardano.CoinSelection.Types.TokenBundle
     ( -- * Type
