@@ -8,9 +8,6 @@ let
         cabal = {
           index-state = indexState;
         };
-        cabal-fmt = {
-          index-state = indexState;
-        };
         haskell-language-server = {
           index-state = indexState;
         };
