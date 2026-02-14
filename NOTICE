@@ -1,0 +1,34 @@
+cardano-coin-selection
+
+Copyright 2018-2022 IOHK
+Copyright 2023-2026 Cardano Foundation
+
+This product includes software developed at IOHK
+(https://iohk.io/) as part of the cardano-wallet project
+(https://github.com/cardano-foundation/cardano-wallet).
+
+Original authors and contributors
+----------------------------------
+
+The coin selection algorithm, data structures, and primitive types were
+designed and implemented primarily by:
+
+  Jonathan Knowles          — round-robin algorithm, change generation,
+                              collateral selection, UTxO index/selection,
+                              TokenMap, TokenBundle, Coin, numeric utilities
+  Matthias Benkort (KtorZ)  — original coin selection design
+  Pawel Jakubas             — original coin selection, UTxO index
+
+With contributions from:
+
+  Heinrich Apfelmus         — coin selection
+  Johannes Lund (Anviking)  — early coin selection
+  Yura (Unisay)             — coin selection, numeric utilities
+  Rodney Lorrimar           — numeric utilities
+  Erik de Castro Lopo       — coin selection
+  Jean-Baptiste Giraudeau   — numeric utilities
+  Piotr Stachyra            — coin selection
+
+Forked and maintained by:
+
+  Paolo Veronelli           — Cardano Foundation (High Assurance Lab)
