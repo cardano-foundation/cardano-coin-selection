@@ -6,7 +6,7 @@ module Cardano.CoinSelection.UTxOSelection.Gen
     , shrinkUTxOSelection
     , shrinkUTxOSelectionNonEmpty
     )
-    where
+where
 
 import Prelude
 
@@ -47,16 +47,19 @@ import qualified Cardano.CoinSelection.UTxOSelection as UTxOSelection
 -- Selections that may be empty
 --------------------------------------------------------------------------------
 
--- | Generates a random 'UTxOSelection'.
---
--- TODO: Restore full implementation once genFunction from
--- Test.QuickCheck.Extra is available.
-genUTxOSelection :: forall u. (Ord u, Show u) => Gen u -> Gen (UTxOSelection u)
-genUTxOSelection _genUTxO = error
-    "genUTxOSelection: requires genFunction from cardano-wallet-test-utils"
+{- | Generates a random 'UTxOSelection'.
+
+TODO: Restore full implementation once genFunction from
+Test.QuickCheck.Extra is available.
+-}
+genUTxOSelection
+    :: forall u. (Ord u, Show u) => Gen u -> Gen (UTxOSelection u)
+genUTxOSelection _genUTxO =
+    error
+        "genUTxOSelection: requires genFunction from cardano-wallet-test-utils"
 
 shrinkUTxOSelection
-    :: Ord u => (u -> [u]) -> (UTxOSelection u -> [UTxOSelection u])
+    :: (Ord u) => (u -> [u]) -> (UTxOSelection u -> [UTxOSelection u])
 shrinkUTxOSelection shrinkUTxO =
     shrinkMapBy UTxOSelection.fromIndexPair UTxOSelection.toIndexPair $
         liftShrink2
@@ -67,18 +70,21 @@ shrinkUTxOSelection shrinkUTxO =
 -- Selections that are non-empty
 --------------------------------------------------------------------------------
 
--- | Generates a random non-empty 'UTxOSelectionNonEmpty'.
---
--- TODO: Restore full implementation once genUTxOSelection is working.
+{- | Generates a random non-empty 'UTxOSelectionNonEmpty'.
+
+TODO: Restore full implementation once genUTxOSelection is working.
+-}
 genUTxOSelectionNonEmpty
     :: (Ord u, Show u) => Gen u -> Gen (UTxOSelectionNonEmpty u)
-genUTxOSelectionNonEmpty _genUTxO = error
-    "genUTxOSelectionNonEmpty: requires genFunction from \
-    \cardano-wallet-test-utils"
+genUTxOSelectionNonEmpty _genUTxO =
+    error
+        "genUTxOSelectionNonEmpty: requires genFunction from \
+        \cardano-wallet-test-utils"
 
 shrinkUTxOSelectionNonEmpty
-    :: Ord u => (u -> [u]) -> (UTxOSelectionNonEmpty u -> [UTxOSelectionNonEmpty u])
-shrinkUTxOSelectionNonEmpty shrinkUTxO
-    = mapMaybe UTxOSelection.toNonEmpty
-    . shrinkUTxOSelection shrinkUTxO
-    . UTxOSelection.fromNonEmpty
+    :: (Ord u)
+    => (u -> [u]) -> (UTxOSelectionNonEmpty u -> [UTxOSelectionNonEmpty u])
+shrinkUTxOSelectionNonEmpty shrinkUTxO =
+    mapMaybe UTxOSelection.toNonEmpty
+        . shrinkUTxOSelection shrinkUTxO
+        . UTxOSelection.fromNonEmpty

@@ -2,12 +2,13 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
 
--- |
--- Copyright: (c) 2018-2020 IOHK
--- License: Apache-2.0
---
--- Provides testing functions to check that type class
--- instances obey laws.
+{- |
+Copyright: (c) 2018-2020 IOHK
+License: Apache-2.0
+
+Provides testing functions to check that type class
+instances obey laws.
+-}
 module Cardano.CoinSelection.Test.Laws
     ( testLaws
     , testLawsMany
@@ -37,14 +38,14 @@ import Test.QuickCheck.Classes
 
 testLaws
     :: forall a
-     . Typeable a
+     . (Typeable a)
     => (Proxy a -> Laws)
     -> Spec
 testLaws getLaws =
-    parallel
-        $ describe description
-        $ forM_ (lawsProperties laws)
-        $ uncurry it
+    parallel $
+        describe description $
+            forM_ (lawsProperties laws) $
+                uncurry it
   where
     description =
         mconcat
@@ -57,7 +58,7 @@ testLaws getLaws =
 
 testLawsMany
     :: forall a
-     . Typeable a
+     . (Typeable a)
     => [Proxy a -> Laws]
     -> Spec
 testLawsMany getLawsMany =

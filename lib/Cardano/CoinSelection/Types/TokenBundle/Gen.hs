@@ -31,32 +31,37 @@ import Test.QuickCheck
     )
 
 genTokenBundle :: Gen TokenBundle
-genTokenBundle = TokenBundle
-    <$> genCoin
-    <*> genTokenMap
+genTokenBundle =
+    TokenBundle
+        <$> genCoin
+        <*> genTokenMap
 
 shrinkTokenBundle :: TokenBundle -> [TokenBundle]
 shrinkTokenBundle (TokenBundle c m) =
-    uncurry TokenBundle <$> shrinkInterleaved
-        (c, shrinkCoin)
-        (m, shrinkTokenMap)
+    uncurry TokenBundle
+        <$> shrinkInterleaved
+            (c, shrinkCoin)
+            (m, shrinkTokenMap)
 
 genTokenBundleSmallRange :: Gen TokenBundle
-genTokenBundleSmallRange = TokenBundle
-    <$> genCoin
-    <*> genTokenMapSmallRange
+genTokenBundleSmallRange =
+    TokenBundle
+        <$> genCoin
+        <*> genTokenMapSmallRange
 
 shrinkTokenBundleSmallRange :: TokenBundle -> [TokenBundle]
 shrinkTokenBundleSmallRange = shrinkTokenBundle
 
 genTokenBundleSmallRangePositive :: Gen TokenBundle
-genTokenBundleSmallRangePositive = TokenBundle
-    <$> genCoinPositive
-    <*> genTokenMapSmallRange
+genTokenBundleSmallRangePositive =
+    TokenBundle
+        <$> genCoinPositive
+        <*> genTokenMapSmallRange
 
 shrinkTokenBundleSmallRangePositive
     :: TokenBundle -> [TokenBundle]
 shrinkTokenBundleSmallRangePositive (TokenBundle c m) =
-    uncurry TokenBundle <$> shrinkInterleaved
-        (c, shrinkCoinPositive)
-        (m, shrinkTokenMap)
+    uncurry TokenBundle
+        <$> shrinkInterleaved
+            (c, shrinkCoinPositive)
+            (m, shrinkTokenMap)

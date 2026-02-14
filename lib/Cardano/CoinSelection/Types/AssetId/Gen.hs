@@ -33,11 +33,13 @@ genAssetId =
 
 shrinkAssetId :: AssetId -> [AssetId]
 shrinkAssetId (AssetId p t) =
-    uncurry AssetId <$> shrinkInterleaved
-        (p, shrinkTokenPolicyId)
-        (t, shrinkAssetName)
+    uncurry AssetId
+        <$> shrinkInterleaved
+            (p, shrinkTokenPolicyId)
+            (t, shrinkAssetName)
 
 genAssetIdLargeRange :: Gen AssetId
-genAssetIdLargeRange = AssetId
-    <$> genTokenPolicyIdLargeRange
-    <*> genAssetNameLargeRange
+genAssetIdLargeRange =
+    AssetId
+        <$> genTokenPolicyIdLargeRange
+        <*> genAssetNameLargeRange

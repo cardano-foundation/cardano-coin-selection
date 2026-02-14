@@ -1,12 +1,12 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingStrategies #-}
 
--- |
--- Copyright: © 2018-2020 IOHK
--- License: Apache-2.0
---
--- Asset identifiers.
---
+{- |
+Copyright: © 2018-2020 IOHK
+License: Apache-2.0
+
+Asset identifiers.
+-}
 module Cardano.CoinSelection.Types.AssetId
     ( AssetId (..)
     ) where
@@ -26,9 +26,9 @@ import GHC.Generics
     ( Generic
     )
 
--- | A combination of a token policy identifier and an asset name that can be
---   used as a compound identifier.
---
+{- | A combination of a token policy identifier and an asset name that can be
+  used as a compound identifier.
+-}
 data AssetId = AssetId
     { policyId
         :: !TokenPolicyId

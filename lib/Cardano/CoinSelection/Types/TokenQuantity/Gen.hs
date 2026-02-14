@@ -49,19 +49,23 @@ genTokenQuantityPositive = sized $ \n ->
     quantityFromInt <$> choose (1, max 1 n)
 
 shrinkTokenQuantityPositive :: TokenQuantity -> [TokenQuantity]
-shrinkTokenQuantityPositive
-    = fmap quantityFromInteger
-    . filter (> 0)
-    . shrink
-    . quantityToInteger
+shrinkTokenQuantityPositive =
+    fmap quantityFromInteger
+        . filter (> 0)
+        . shrink
+        . quantityToInteger
 
 genTokenQuantityFullRange :: Gen TokenQuantity
-genTokenQuantityFullRange = frequency
-    [ (1, pure minTQ)
-    , (1, pure maxTQ)
-    , (8, quantityFromInteger
-        <$> choose (1, quantityToInteger maxTQ - 1))
-    ]
+genTokenQuantityFullRange =
+    frequency
+        [ (1, pure minTQ)
+        , (1, pure maxTQ)
+        ,
+            ( 8
+            , quantityFromInteger
+                <$> choose (1, quantityToInteger maxTQ - 1)
+            )
+        ]
   where
     minTQ = TokenQuantity 0
     maxTQ = TokenQuantity $ fromIntegral $ maxBound @Word64
@@ -74,14 +78,16 @@ quantityToInteger (TokenQuantity q) = fromIntegral q
 
 quantityFromInt :: Int -> TokenQuantity
 quantityFromInt i
-    | i < 0 = error $
-        "Unable to convert integer to token quantity: "
-            <> show i
+    | i < 0 =
+        error $
+            "Unable to convert integer to token quantity: "
+                <> show i
     | otherwise = TokenQuantity $ fromIntegral i
 
 quantityFromInteger :: Integer -> TokenQuantity
 quantityFromInteger i
-    | i < 0 = error $
-        "Unable to convert integer to token quantity: "
-            <> show i
+    | i < 0 =
+        error $
+            "Unable to convert integer to token quantity: "
+                <> show i
     | otherwise = TokenQuantity $ fromIntegral i

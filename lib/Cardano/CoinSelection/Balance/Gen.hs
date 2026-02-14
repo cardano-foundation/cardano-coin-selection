@@ -7,7 +7,7 @@ module Cardano.CoinSelection.Balance.Gen
     , shrinkSelectionSkeleton
     , shrinkSelectionStrategy
     )
-    where
+where
 
 import Prelude
 
@@ -67,19 +67,23 @@ import qualified Data.Set as Set
 -- Selection skeletons
 --------------------------------------------------------------------------------
 
--- | Generates a random 'SelectionSkeleton'.
---
--- TODO: Restore full implementation once Gen modules for AssetId and
--- TokenBundle are available.
-genSelectionSkeleton :: Gen (Address ctx) -> Gen (SelectionSkeleton ctx)
-genSelectionSkeleton _genAddress = error
-    "genSelectionSkeleton: requires genAssetId, genTokenBundleSmallRange, \
-    \and genAddress generators from cardano-wallet-test-utils"
+{- | Generates a random 'SelectionSkeleton'.
 
--- | Shrinks a 'SelectionSkeleton'.
---
--- TODO: Restore full implementation once Gen modules and
--- Test.QuickCheck.Extra are available.
+TODO: Restore full implementation once Gen modules for AssetId and
+TokenBundle are available.
+-}
+genSelectionSkeleton
+    :: Gen (Address ctx) -> Gen (SelectionSkeleton ctx)
+genSelectionSkeleton _genAddress =
+    error
+        "genSelectionSkeleton: requires genAssetId, genTokenBundleSmallRange, \
+        \and genAddress generators from cardano-wallet-test-utils"
+
+{- | Shrinks a 'SelectionSkeleton'.
+
+TODO: Restore full implementation once Gen modules and
+Test.QuickCheck.Extra are available.
+-}
 shrinkSelectionSkeleton
     :: (Address ctx -> [Address ctx])
     -> (SelectionSkeleton ctx -> [SelectionSkeleton ctx])

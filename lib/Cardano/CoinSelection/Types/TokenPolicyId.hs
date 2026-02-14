@@ -4,12 +4,12 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingVia #-}
 
--- |
--- Copyright: © 2018-2020 IOHK
--- License: Apache-2.0
---
--- Token policy identifiers.
---
+{- |
+Copyright: © 2018-2020 IOHK
+License: Apache-2.0
+
+Token policy identifiers.
+-}
 module Cardano.CoinSelection.Types.TokenPolicyId
     ( TokenPolicyId (..)
     ) where
@@ -35,13 +35,14 @@ import Quiet
     ( Quiet (..)
     )
 
--- | Token policy identifiers, represented by the hash of the monetary policy
--- script.
-newtype TokenPolicyId =
-    -- | Construct a 'TokenPolicyId' without any validation.
-    UnsafeTokenPolicyId { unTokenPolicyId :: Hash "TokenPolicy" }
+{- | Token policy identifiers, represented by the hash of the monetary policy
+script.
+-}
+newtype TokenPolicyId
+    = -- | Construct a 'TokenPolicyId' without any validation.
+      UnsafeTokenPolicyId {unTokenPolicyId :: Hash "TokenPolicy"}
     deriving stock (Data, Eq, Ord, Generic)
     deriving (Read, Show) via (Quiet TokenPolicyId)
-    deriving anyclass Hashable
+    deriving anyclass (Hashable)
 
 instance NFData TokenPolicyId

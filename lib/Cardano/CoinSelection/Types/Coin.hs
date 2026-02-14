@@ -3,13 +3,13 @@
 {-# LANGUAGE ExplicitForAll #-}
 {-# LANGUAGE TypeApplications #-}
 
--- |
--- Copyright: © 2018-2020 IOHK
--- License: Apache-2.0
---
--- This module provides the 'Coin' data type, which represents a quantity of
--- lovelace.
---
+{- |
+Copyright: © 2018-2020 IOHK
+License: Apache-2.0
+
+This module provides the 'Coin' data type, which represents a quantity of
+lovelace.
+-}
 module Cardano.CoinSelection.Types.Coin
     ( -- * Type
       Coin (..)
@@ -31,6 +31,11 @@ module Cardano.CoinSelection.Types.Coin
     , subtract
     , difference
     , distance
+
+      -- * Partitioning
+    , equipartition
+    , partition
+    , unsafePartition
     ) where
 
 import Prelude hiding
@@ -51,6 +56,9 @@ import Data.Hashable
 import Data.IntCast
     ( intCast
     , intCastMaybe
+    )
+import Data.List.NonEmpty
+    ( NonEmpty
     )
 import Data.Maybe
     ( fromMaybe
@@ -90,17 +98,19 @@ import GHC.Stack
 import Numeric.Natural
     ( Natural
     )
+
+import qualified Cardano.CoinSelection.Internal.Numeric as Numeric
 import Quiet
     ( Quiet (..)
     )
 
--- | A 'Coin' represents a quantity of lovelace.
---
--- Reminder: 1 ada = 1,000,000 lovelace.
---
--- The 'Coin' type has 'Semigroup' and 'Monoid' instances that correspond
--- to ordinary addition and summation.
---
+{- | A 'Coin' represents a quantity of lovelace.
+
+Reminder: 1 ada = 1,000,000 lovelace.
+
+The 'Coin' type has 'Semigroup' and 'Monoid' instances that correspond
+to ordinary addition and summation.
+-}
 newtype Coin = Coin
     { unCoin :: Natural
     }
@@ -118,38 +128,34 @@ instance Hashable Coin
 -- Conversions (Safe)
 --------------------------------------------------------------------------------
 
--- | Constructs a 'Coin' from an 'Integral' value.
---
--- Returns 'Nothing' if the given value is negative.
---
+{- | Constructs a 'Coin' from an 'Integral' value.
+
+Returns 'Nothing' if the given value is negative.
+-}
 fromIntegralMaybe :: (Bits i, Integral i) => i -> Maybe Coin
 fromIntegralMaybe i = Coin <$> intCastMaybe i
 
 -- | Constructs a 'Coin' from a 'Natural' value.
---
 fromNatural :: Natural -> Coin
 fromNatural = Coin
 
 -- | Constructs a 'Coin' from a 'Word64' value.
---
 fromWord64 :: Word64 -> Coin
 fromWord64 = Coin . intCast
 
 -- | Converts a 'Coin' to an 'Integer' value.
---
 toInteger :: Coin -> Integer
 toInteger = intCast . unCoin
 
 -- | Converts a 'Coin' to a 'Natural' value.
---
 toNatural :: Coin -> Natural
 toNatural = unCoin
 
--- | Converts a 'Coin' to a 'Word64' value.
---
--- Returns 'Nothing' if the given value does not fit within the bounds of a
--- 64-bit word.
---
+{- | Converts a 'Coin' to a 'Word64' value.
+
+Returns 'Nothing' if the given value does not fit within the bounds of a
+64-bit word.
+-}
 toWord64Maybe :: Coin -> Maybe Word64
 toWord64Maybe (Coin c) = intCastMaybe c
 
@@ -157,62 +163,65 @@ toWord64Maybe (Coin c) = intCastMaybe c
 -- Conversions (Unsafe)
 -------------------------------------------------------------------------------
 
--- | Constructs a 'Coin' from an 'Integral' value.
---
--- Callers of this function must take responsibility for checking that the
--- given value is not negative.
---
--- Produces a run-time error if the given value is negative.
---
+{- | Constructs a 'Coin' from an 'Integral' value.
+
+Callers of this function must take responsibility for checking that the
+given value is not negative.
+
+Produces a run-time error if the given value is negative.
+-}
 unsafeFromIntegral
-    :: HasCallStack
+    :: (HasCallStack)
     => (Bits i, Integral i, Show i)
     => i
     -> Coin
 unsafeFromIntegral i = fromMaybe onError (fromIntegralMaybe i)
   where
-    onError =  error $ unwords
-        [ "Coin.unsafeFromIntegral:"
-        , show i
-        , "is not a natural number."
-        ]
+    onError =
+        error $
+            unwords
+                [ "Coin.unsafeFromIntegral:"
+                , show i
+                , "is not a natural number."
+                ]
 
--- | Converts a 'Coin' to a 'Word64' value.
---
--- Callers of this function must take responsibility for checking that the
--- given value will fit within the bounds of a 64-bit word.
---
--- Produces a run-time error if the given value is out of bounds.
---
-unsafeToWord64 :: HasCallStack => Coin -> Word64
+{- | Converts a 'Coin' to a 'Word64' value.
+
+Callers of this function must take responsibility for checking that the
+given value will fit within the bounds of a 64-bit word.
+
+Produces a run-time error if the given value is out of bounds.
+-}
+unsafeToWord64 :: (HasCallStack) => Coin -> Word64
 unsafeToWord64 c = fromMaybe onError (toWord64Maybe c)
   where
-    onError = error $ unwords
-        [ "Coin.unsafeToWord64:"
-        , show c
-        , "does not fit within the bounds of a 64-bit word."
-        ]
+    onError =
+        error $
+            unwords
+                [ "Coin.unsafeToWord64:"
+                , show c
+                , "does not fit within the bounds of a 64-bit word."
+                ]
 
 --------------------------------------------------------------------------------
 -- Arithmetic operations
 --------------------------------------------------------------------------------
 
--- | Subtracts the second coin from the first.
---
--- Returns 'Nothing' if the second coin is strictly greater than the first.
---
+{- | Subtracts the second coin from the first.
+
+Returns 'Nothing' if the second coin is strictly greater than the first.
+-}
 subtract :: Coin -> Coin -> Maybe Coin
 subtract = (</>)
 
 -- | Calculates the combined value of two coins.
---
 add :: Coin -> Coin -> Coin
 add = (<>)
 
--- | Subtracts the second coin from the first.
---
--- Returns 'Coin 0' if the second coin is strictly greater than the first.
---
+{- | Subtracts the second coin from the first.
+
+Returns 'Coin 0' if the second coin is strictly greater than the first.
+-}
 difference :: Coin -> Coin -> Coin
 difference = (<\>)
 
@@ -220,7 +229,50 @@ difference = (<\>)
 distance :: Coin -> Coin -> Coin
 distance a b = (a <\> b) <> (b <\> a)
 
--- NOTE: equipartition, partition, partitionDefault, and unsafePartition
--- have been removed because they depend on equipartitionNatural and
--- partitionNatural from Cardano.Numeric.Util, which are not included
--- in this package. These functions remain in cardano-wallet.
+--------------------------------------------------------------------------------
+-- Partitioning
+--------------------------------------------------------------------------------
+
+-- | Partitions a coin into equal parts.
+equipartition
+    :: Coin
+    -> NonEmpty a
+    -> NonEmpty Coin
+equipartition c =
+    fmap fromNatural . Numeric.equipartitionNatural (toNatural c)
+
+{- | Partitions a coin into a number of parts, where the size of each part is
+  proportional to the size of its corresponding element in the given list
+  of weights.
+
+Returns 'Nothing' if the sum of weights is zero.
+-}
+partition
+    :: Coin -> NonEmpty Coin -> Maybe (NonEmpty Coin)
+partition c =
+    fmap (fmap Coin)
+        . Numeric.partitionNatural (unCoin c)
+        . fmap unCoin
+
+{- | Partitions a coin into a number of parts, where the size of each part is
+  proportional to the size of its corresponding element in the given list
+  of weights.
+
+This function always satisfies the following properties:
+
+prop> sum (unsafePartition c ws) == c
+prop> length (unsafePartition c ws) == length ws
+
+Throws a run-time error if the sum of weights is zero.
+-}
+unsafePartition
+    :: (HasCallStack)
+    => Coin
+    -> NonEmpty Coin
+    -> NonEmpty Coin
+unsafePartition c =
+    fromMaybe zeroWeightSumError . partition c
+  where
+    zeroWeightSumError =
+        error
+            "Coin.unsafePartition: weights must have a non-zero sum."
