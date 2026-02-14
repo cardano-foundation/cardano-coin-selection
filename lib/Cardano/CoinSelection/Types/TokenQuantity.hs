@@ -4,10 +4,8 @@
 {-# LANGUAGE DerivingVia #-}
 
 {- |
-Copyright: © 2018-2020 IOHK
+Copyright: © 2018-2026 IOHK, 2024-2026 Cardano Foundation
 License: Apache-2.0
-
-Represents an integral quantity of tokens.
 -}
 module Cardano.CoinSelection.Types.TokenQuantity
     ( -- * Type

@@ -14,6 +14,10 @@
 
 {- HLINT ignore "Use camelCase" -}
 
+{- |
+Copyright: © 2018-2026 IOHK, 2024-2026 Cardano Foundation
+License: Apache-2.0
+-}
 module Cardano.CoinSelectionSpec
 where
 

@@ -3,11 +3,8 @@
 {-# LANGUAGE TypeApplications #-}
 
 {- |
-Copyright: (c) 2018-2020 IOHK
+Copyright: © 2018-2026 IOHK, 2024-2026 Cardano Foundation
 License: Apache-2.0
-
-Provides testing functions to check that type class
-instances obey laws.
 -}
 module Cardano.CoinSelection.Test.Laws
     ( testLaws

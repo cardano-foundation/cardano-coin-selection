@@ -5,7 +5,12 @@
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeOperators #-}
 
--- | QuickCheck utilities extracted from @cardano-wallet-test-utils@.
+{- |
+Copyright: © 2018-2026 IOHK, 2024-2026 Cardano Foundation
+License: Apache-2.0
+
+QuickCheck utilities extracted from @cardano-wallet-test-utils@.
+-}
 module Cardano.CoinSelection.Gen.Extra
     ( -- * Generation
       chooseNatural

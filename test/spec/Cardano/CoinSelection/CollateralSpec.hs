@@ -17,7 +17,7 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 {- |
-Copyright: © 2021 IOHK
+Copyright: © 2018-2026 IOHK, 2024-2026 Cardano Foundation
 License: Apache-2.0
 -}
 module Cardano.CoinSelection.CollateralSpec where

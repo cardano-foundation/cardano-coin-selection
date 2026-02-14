@@ -9,30 +9,8 @@
 {-# LANGUAGE TypeFamilies #-}
 
 {- |
-Copyright: © 2018-2021 IOHK
+Copyright: © 2018-2026 IOHK, 2024-2026 Cardano Foundation
 License: Apache-2.0
-
-Provides the 'UTxOSelection' type, which represents a selection of UTxO
-entries from a UTxO set.
-
-It consists of a pair of UTxO sets:
-
-   - the selected set: UTxOs that have already been selected;
-   - the leftover set: UTxOs that have not yet been selected.
-
-To construct a 'UTxOSelection' where none of the UTxOs are selected, use
-the 'fromIndex' function.
-
-To construct a 'UTxOSelection' where some of the UTxOs are selected, use
-either the 'fromIndexFiltered' or the 'fromIndexPair' functions.
-
-To select an element (and move it from the leftover set to the selected
-set), use the 'select' function.
-
-A 'UTxOSelection' can be promoted to a 'UTxOSelectionNonEmpty', indicating
-that the selected set contains at least one UTxO. To promote a selection,
-either use the 'toNonEmpty' function to assert that it is non-empty, or use
-the 'select' function to select a single entry.
 -}
 module Cardano.CoinSelection.UTxOSelection
     ( -- * Classes
