@@ -1,7 +1,6 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE ExplicitForAll #-}
-{-# LANGUAGE TypeApplications #-}
 
 {- |
 Copyright: © 2018-2020 IOHK

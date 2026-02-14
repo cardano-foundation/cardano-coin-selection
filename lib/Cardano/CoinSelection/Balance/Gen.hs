@@ -1,5 +1,4 @@
 {-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE TypeApplications #-}
 
 module Cardano.CoinSelection.Balance.Gen
     ( genSelectionSkeleton
