@@ -37,6 +37,8 @@ nav:
   - Data Structures:
       - UTxO Index: data-structures/utxo-index.md
       - UTxO Selection: data-structures/utxo-selection.md
+  - Architecture:
+      - WASM Portability Audit: architecture/wasm-portability.md
   - References: references.md
 
 markdown_extensions:
