@@ -18,10 +18,10 @@
 
 ## Slice 2: Require Pages demo smoke in gate
 
-- [ ] T030-S2 Orchestrator-owned: extend `gate.sh` to run the `/demo/`
+- [X] T030-S2 Orchestrator-owned: extend `gate.sh` to run the `/demo/`
   Playwright smoke after web CI and keep actionlint on the workflow files.
-- [ ] T030-S2 Orchestrator-owned: prove `./gate.sh`.
-- [ ] T030-S2 Orchestrator-owned: commit with subject
+- [X] T030-S2 Orchestrator-owned: prove `./gate.sh`.
+- [X] T030-S2 Orchestrator-owned: commit with subject
   `chore: require pages demo smoke in gate` and trailer `Tasks: T030-S2`.
 
 ## Finalization
