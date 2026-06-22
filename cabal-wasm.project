@@ -1,0 +1,19 @@
+allow-newer: *:template-haskell, *:base, *:deepseq, *:ghc-prim, *:time, *:text
+
+packages: cardano-coin-selection.cabal
+index-state: 2025-10-01T00:00:00Z
+
+source-repository-package
+  type: git
+  location: https://github.com/paolino/ram.git
+  tag: e6d863d240246e0a1af3dd12cff7047f696f81ea
+  --sha256: 10y4nkm843sdv8qgjbvmpmfxpdxvgccjk28z973brpg2wkknk846
+
+package cardano-coin-selection
+  flags: +wasm
+
+package ram
+  ghc-options: -optc-D_WASI_EMULATED_MMAN -optl-lwasi-emulated-mman
+  hsc2hs-options: --cflag=-D_WASI_EMULATED_MMAN --lflag=-lwasi-emulated-mman
+
+tests: False
