@@ -26,9 +26,9 @@
 
 ## Finalization
 
-- [ ] T030-F1 Verify all task boxes are checked in this file.
-- [ ] T030-F1 Verify PR #35 GitHub checks are green.
-- [ ] T030-F1 Update the PR body with the expected live URL and validation
+- [X] T030-F1 Verify all task boxes are checked in this file.
+- [X] T030-F1 Verify PR #35 GitHub checks are green.
+- [X] T030-F1 Update the PR body with the expected live URL and validation
   evidence.
-- [ ] T030-F1 Drop `gate.sh` in the final ready-for-review commit.
-- [ ] T030-F1 Mark PR #35 ready for review only after checks are green.
+- [X] T030-F1 Drop `gate.sh` in the final ready-for-review commit.
+- [X] T030-F1 Mark PR #35 ready for review only after checks are green.
