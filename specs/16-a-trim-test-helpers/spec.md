@@ -11,8 +11,9 @@ pretty-simple into my build plan.
 
 - Move generator and test-law helper modules out of the main library component
   and into a named internal sublibrary `cardano-coin-selection:gens`.
-- Keep the existing module source files under `lib/`; this is a cabal component
-  boundary refactor, not a source-tree move.
+- Move only the helper module source files out of the main library source root
+  into `test/gens/`, so `library gens` has a non-overlapping source root and
+  imports production modules from the main library component.
 - The main `library` component must no longer expose:
   - `Cardano.CoinSelection.Balance.Gen`
   - `Cardano.CoinSelection.Gen.Extra`
@@ -31,6 +32,8 @@ pretty-simple into my build plan.
 - The `unit` test suite must depend on both the main library and
   `cardano-coin-selection:gens`, and tests must continue to import the same
   generator/test-law module names.
+- Core production module source files must stay under `lib/` and must not be
+  modified for this ticket.
 - If a non-test, non-generator core module imports a `.Gen` module or
   `Cardano.CoinSelection.Test.Laws`, stop and ask through the parent Q/A
   protocol before widening scope.
@@ -44,4 +47,3 @@ pretty-simple into my build plan.
   `pretty-simple`.
 - The branch remains compatible with the existing GitHub CI matrix, including
   build, docs, and wasm checks, before this PR is marked complete.
-
