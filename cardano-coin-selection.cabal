@@ -45,7 +45,11 @@ common opts-lib
     ghc-options: -O2 -Werror
 
 common opts-exe
-  ghc-options: -threaded -rtsopts -Wall
+  if arch(wasm32)
+    ghc-options: -Wall
+
+  else
+    ghc-options: -threaded -rtsopts -Wall
 
   if flag(release)
     ghc-options: -O2 -Werror
@@ -90,11 +94,10 @@ library
     , transformers            >=0.6.1.0 && <0.7
 
   if arch(wasm32)
-    build-depends:
-      , ram                     >=0.22    && <0.23
+    build-depends: ram >=0.22 && <0.23
+
   else
-    build-depends:
-      , memory                  >=0.15    && <0.20
+    build-depends: memory >=0.15 && <0.20
 
   exposed-modules:
     Cardano.CoinSelection
@@ -134,6 +137,16 @@ library
 -- QuickCheck utilities
 -- Test utilities
 -- Internal utilities
+executable coin-select-smoke
+  import:         language, opts-exe
+  hs-source-dirs: app
+  main-is:        Main.hs
+  build-depends:
+    , base
+    , cardano-coin-selection
+    , containers
+    , transformers
+
 test-suite unit
   import:             language, opts-exe
   type:               exitcode-stdio-1.0
