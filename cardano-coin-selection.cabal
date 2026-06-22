@@ -55,6 +55,11 @@ flag release
   default:     False
   manual:      True
 
+flag wasm
+  description: Disable non-library components for wasm32-wasi builds
+  default:     False
+  manual:      True
+
 library
   import:          language, opts-lib
   hs-source-dirs:  lib
@@ -134,6 +139,10 @@ test-suite unit
   type:               exitcode-stdio-1.0
   hs-source-dirs:     test/spec
   main-is:            Spec.hs
+
+  if flag(wasm)
+    buildable: False
+
   other-modules:
     Cardano.CoinSelection.BalanceSpec
     Cardano.CoinSelection.CollateralSpec
