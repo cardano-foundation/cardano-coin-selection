@@ -16,15 +16,15 @@ nix develop --quiet -c just ci
 
 nix develop --quiet -c bash -c '
   set -euo pipefail
-  cabal build -O0 exe:coin-select
+  cabal build -O0 exe:coin-select >&2
   exe=$(cabal list-bin -O0 exe:coin-select)
   "$exe" < "$1"
 ' bash "$tmp/input.txt" >"$tmp/native.out"
 
 SAMPLE_INPUT="$tmp/input.txt" nix shell 'gitlab:haskell-wasm/ghc-wasm-meta?host=gitlab.haskell.org#all_9_12' --command bash -c '
   set -euo pipefail
-  wasm32-wasi-cabal update
-  wasm32-wasi-cabal --project-file=cabal-wasm.project build exe:coin-select
+  wasm32-wasi-cabal update >&2
+  wasm32-wasi-cabal --project-file=cabal-wasm.project build exe:coin-select >&2
   wasm=$(find dist-newstyle -name "coin-select.wasm" -type f | head -1)
   test -n "$wasm"
   wasmtime "$wasm" < "$SAMPLE_INPUT"
