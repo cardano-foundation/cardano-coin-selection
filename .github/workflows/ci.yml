@@ -44,6 +44,27 @@ jobs:
           cachix-auth-token: "${{ secrets.CACHIX_AUTH_TOKEN }}"
       - run: nix develop github:paolino/dev-assets?dir=mkdocs -c mkdocs build --strict
 
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: paolino/dev-assets/setup-nix@v0.0.1
+        with:
+          cachix-auth-token: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.ghc-wasm/.cabal/store
+            ~/.ghc-wasm/.cabal/packages
+          key: ghc-wasm-${{ runner.os }}-all-9-12-${{ hashFiles('cabal-wasm.project', 'cardano-coin-selection.cabal', 'flake.lock', 'web/flake.lock', 'web/spago.lock', 'web/package-lock.json') }}
+          restore-keys: |
+            ghc-wasm-${{ runner.os }}-all-9-12-
+
+      - name: Web CI
+        run: cd web && nix develop --quiet -c just ci
+
   wasm:
     runs-on: ubuntu-latest
     steps:

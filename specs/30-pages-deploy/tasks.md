@@ -2,18 +2,18 @@
 
 ## Slice 1: CI/deploy wiring and subpath smoke support
 
-- [ ] T030-S1 Add a web CI job in `.github/workflows/ci.yml` on
+- [X] T030-S1 Add a web CI job in `.github/workflows/ci.yml` on
   `ubuntu-latest` with `paolino/dev-assets/setup-nix@v0.0.1`, ghc-wasm Cabal
   cache, and `cd web && nix develop --quiet -c just ci`.
-- [ ] T030-S1 Extend `.github/workflows/docs.yml` to restore/cache ghc-wasm
+- [X] T030-S1 Extend `.github/workflows/docs.yml` to restore/cache ghc-wasm
   Cabal directories before the deploy build.
-- [ ] T030-S1 Extend `.github/workflows/docs.yml` to run the web Nix/just CI,
+- [X] T030-S1 Extend `.github/workflows/docs.yml` to run the web Nix/just CI,
   copy `web/dist/*` into `docs/demo/`, and then run the existing MkDocs deploy.
-- [ ] T030-S1 Update `web/smoke/interactive-ui.mjs` so
+- [X] T030-S1 Update `web/smoke/interactive-ui.mjs` so
   `SMOKE_BASE_PATH=/demo/` serves and opens the bundle under `/demo/`.
-- [ ] T030-S1 Prove the focused web CI command, `/demo/` Playwright smoke, and
+- [X] T030-S1 Prove the focused web CI command, `/demo/` Playwright smoke, and
   actionlint command from `plan.md`.
-- [ ] T030-S1 Commit with subject `ci: deploy spa under docs pages` and trailer
+- [X] T030-S1 Commit with subject `ci: deploy spa under docs pages` and trailer
   `Tasks: T030-S1`.
 
 ## Slice 2: Require Pages demo smoke in gate

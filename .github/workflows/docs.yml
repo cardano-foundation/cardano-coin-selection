@@ -17,4 +17,21 @@ jobs:
       - uses: paolino/dev-assets/setup-nix@v0.0.1
         with:
           cachix-auth-token: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.ghc-wasm/.cabal/store
+            ~/.ghc-wasm/.cabal/packages
+          key: ghc-wasm-${{ runner.os }}-all-9-12-${{ hashFiles('cabal-wasm.project', 'cardano-coin-selection.cabal', 'flake.lock', 'web/flake.lock', 'web/spago.lock', 'web/package-lock.json') }}
+          restore-keys: |
+            ghc-wasm-${{ runner.os }}-all-9-12-
+      - name: Build web demo
+        run: cd web && nix develop --quiet -c just ci
+      - name: Copy web demo into docs
+        run: |
+          rm -rf docs/demo
+          mkdir -p docs/demo
+          cp -R web/dist/. docs/demo/
+          test -f docs/demo/index.html
+          test -f docs/demo/index.js
       - run: nix develop github:paolino/dev-assets?dir=mkdocs -c mkdocs-deploy --force

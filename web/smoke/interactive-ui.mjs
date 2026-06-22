@@ -20,6 +20,7 @@ const { chromium } = await import(
 );
 
 const distRoot = resolve(import.meta.dirname, "../dist");
+const smokeBasePath = normalizeBasePath(process.env.SMOKE_BASE_PATH ?? "/");
 
 const contentTypes = new Map([
   [".html", "text/html; charset=utf-8"],
@@ -28,12 +29,46 @@ const contentTypes = new Map([
   [".wasm", "application/wasm"],
 ]);
 
+function normalizeBasePath(basePath) {
+  if (!basePath || basePath === "/") {
+    return "/";
+  }
+
+  const withLeadingSlash = basePath.startsWith("/") ? basePath : `/${basePath}`;
+  return withLeadingSlash.endsWith("/")
+    ? withLeadingSlash
+    : `${withLeadingSlash}/`;
+}
+
+function toDistPathname(pathname) {
+  if (smokeBasePath === "/") {
+    return pathname === "/" ? "/index.html" : pathname;
+  }
+
+  const basePathWithoutSlash = smokeBasePath.slice(0, -1);
+  if (pathname === basePathWithoutSlash || pathname === smokeBasePath) {
+    return "/index.html";
+  }
+
+  if (!pathname.startsWith(smokeBasePath)) {
+    return undefined;
+  }
+
+  return `/${pathname.slice(smokeBasePath.length)}`;
+}
+
 function serveDist() {
   const server = createServer(async (request, response) => {
     try {
       const requestUrl = new URL(request.url ?? "/", "http://127.0.0.1");
-      const pathname =
-        requestUrl.pathname === "/" ? "/index.html" : requestUrl.pathname;
+      const pathname = toDistPathname(requestUrl.pathname);
+
+      if (pathname === undefined) {
+        response.writeHead(404);
+        response.end("Not found");
+        return;
+      }
+
       const filePath = normalize(join(distRoot, decodeURIComponent(pathname)));
       const fileRelative = relative(distRoot, filePath);
 
@@ -83,7 +118,7 @@ const browser = await chromium.launch();
 
 try {
   const page = await browser.newPage();
-  await page.goto(url);
+  await page.goto(new URL(smokeBasePath, url).href);
   await page.getByRole("button", { name: "One big UTxO" }).click();
   await page.getByLabel("Lovelace for big-1").fill("9000000");
   await page.getByRole("button", { name: "Run coin selection" }).click();
