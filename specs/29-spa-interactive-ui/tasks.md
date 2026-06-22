@@ -10,8 +10,20 @@
 - [X] T029-S1 Prove `cd web && nix develop --quiet -c just ci` plus the Playwright smoke command from `plan.md`.
 - [X] T029-S1 Commit with subject `feat: add interactive coin selection ui` and trailer `Tasks: T029-S1`.
 
-## Slice 2: Require the browser smoke in gate.sh
+## Slice 2: Structured UX presets and selected-row highlighting
 
-- [ ] T029-S2 Orchestrator-owned: extend `gate.sh` to derive Playwright paths from Nix and run `web/smoke/interactive-ui.mjs` after web CI.
-- [ ] T029-S2 Orchestrator-owned: prove `./gate.sh`.
-- [ ] T029-S2 Orchestrator-owned: commit with subject `chore: require interactive smoke in gate` and trailer `Tasks: T029-S2`.
+- [ ] T029-S2 Replace the raw textarea input with structured editable UTxO rows containing id and lovelace fields.
+- [ ] T029-S2 Add controls to add and remove UTxO rows without changing the wasm boundary contract.
+- [ ] T029-S2 Add a structured target amount field and build `utxo ...` plus `output ...` text under the hood before calling `runCoinSelect`.
+- [ ] T029-S2 Add preset scenario buttons for many small UTxOs, one big UTxO, and near-exact match; applying a preset repopulates inputs and runs selection.
+- [ ] T029-S2 Map `selected <id>` output lines back onto the UTxO pool and visibly mark/highlight selected pool rows.
+- [ ] T029-S2 Show selected total, target, and change totals; accept `change 0` for exact matches.
+- [ ] T029-S2 Update `web/smoke/interactive-ui.mjs` to exercise a preset plus an edit and assert selected-row highlighting plus totals.
+- [ ] T029-S2 Prove `cd web && nix develop --quiet -c just ci` plus the Playwright smoke command from `plan.md`.
+- [ ] T029-S2 Commit with subject `feat: make coin selection choices visible` and trailer `Tasks: T029-S2`.
+
+## Slice 3: Require the browser smoke in gate.sh
+
+- [ ] T029-S3 Orchestrator-owned: extend `gate.sh` to derive Playwright paths from Nix and run `web/smoke/interactive-ui.mjs` after web CI.
+- [ ] T029-S3 Orchestrator-owned: prove `./gate.sh`.
+- [ ] T029-S3 Orchestrator-owned: commit with subject `chore: require interactive smoke in gate` and trailer `Tasks: T029-S3`.
