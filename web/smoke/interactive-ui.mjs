@@ -20,18 +20,6 @@ const { chromium } = await import(
 );
 
 const distRoot = resolve(import.meta.dirname, "../dist");
-const editedInput = `utxo input-a 1000000
-utxo input-b 2500000
-utxo input-c 4000000
-output target-address 6000000
-`;
-
-const expectedRows = [
-  ["input-a", "1000000"],
-  ["input-b", "2500000"],
-  ["input-c", "4000000"],
-];
-const expectedChange = "1500000";
 
 const contentTypes = new Map([
   [".html", "text/html; charset=utf-8"],
@@ -77,24 +65,37 @@ function serveDist() {
   });
 }
 
+async function assertSelectedRow(page, inputId) {
+  const row = page.locator(`[data-utxo-id="${inputId}"]`);
+  await row.waitFor();
+  assert.match(await row.getAttribute("class"), /\butxo-row\b/);
+  assert.match(await row.getAttribute("class"), /\bselected\b/);
+}
+
+async function assertTotal(page, label, lovelace) {
+  await page
+    .getByText(new RegExp(`${label}\\s+${lovelace}\\b`, "i"))
+    .waitFor();
+}
+
 const { server, url } = await serveDist();
 const browser = await chromium.launch();
 
 try {
   const page = await browser.newPage();
   await page.goto(url);
-  await page.getByLabel("Coin selection input").fill(editedInput);
+  await page.getByRole("button", { name: "One big UTxO" }).click();
+  await page.getByLabel("Lovelace for big-1").fill("9000000");
   await page.getByRole("button", { name: "Run coin selection" }).click();
 
-  for (const [inputId, lovelace] of expectedRows) {
-    await page
-      .getByRole("row", { name: new RegExp(`${inputId}\\s+${lovelace}`) })
-      .waitFor();
-  }
+  await assertSelectedRow(page, "big-1");
+  await assertTotal(page, "Selected total", "9000000");
+  await assertTotal(page, "Target", "6000000");
+  await assertTotal(page, "Change", "3000000");
 
-  await page
-    .getByText(new RegExp(`Change\\s+${expectedChange}\\b`, "i"))
-    .waitFor();
+  await page.getByRole("button", { name: "Near-exact match" }).click();
+  await assertSelectedRow(page, "exact-1");
+  await assertTotal(page, "Change", "0");
 } finally {
   await browser.close();
   await new Promise((resolveClose, rejectClose) => {
