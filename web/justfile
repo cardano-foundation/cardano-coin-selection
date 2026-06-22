@@ -1,0 +1,45 @@
+wasm_source := "../dist-newstyle"
+wasm_target := "src/assets/coin-select.wasm"
+
+build:
+    spago build
+
+prepare-wasm:
+    cd .. && nix shell 'gitlab:haskell-wasm/ghc-wasm-meta?host=gitlab.haskell.org#all_9_12' --command bash -c 'set -euo pipefail; wasm32-wasi-cabal update; wasm32-wasi-cabal --project-file=cabal-wasm.project build exe:coin-select; mkdir -p web/src/assets; wasm=$(find dist-newstyle -name coin-select.wasm -type f | head -1); test -n "$wasm"; cp "$wasm" web/src/assets/coin-select.wasm'
+
+ensure-wasm:
+    test -f {{wasm_target}} || just prepare-wasm
+
+bundle-app: ensure-wasm
+    mkdir -p dist
+    esbuild src/bootstrap.js --bundle --outfile=dist/deps.js --format=iife --platform=browser --loader:.wasm=binary --minify
+    spago bundle --module Main --outfile dist/index.js
+    cat dist/deps.js dist/index.js > dist/bundle.js
+    mv dist/bundle.js dist/index.js
+    rm dist/deps.js
+
+bundle: bundle-app
+
+dev:
+    spago build --watch
+
+format:
+    purs-tidy format-in-place 'src/**/*.purs'
+
+lint:
+    purs-tidy check 'src/**/*.purs'
+
+install:
+    npm ci
+
+budget:
+    test "$(jq '[.packages | to_entries[] | select(.key != "" and (.value.dev != true))] | length' package-lock.json)" -le 1
+    test "$(jq '[.packages | to_entries[] | select((.value.dev != true) and .value.hasInstallScript == true)] | length' package-lock.json)" -eq 0
+
+ci: install lint build bundle budget
+
+serve: bundle
+    cd dist && python3 -m http.server 10028
+
+clean:
+    rm -rf output/ dist/index.js dist/deps.js dist/bundle.js node_modules/ result

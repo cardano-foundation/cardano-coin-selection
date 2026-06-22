@@ -11,6 +11,14 @@ cabal.project.local~
 result
 result-*
 
+# PureScript SPA generated outputs
+web/src/assets/coin-select.wasm
+web/.spago/
+web/output/
+web/node_modules/
+web/dist/index.js
+web/result
+
 # LLM investigation notes (local only)
 .llm/
 

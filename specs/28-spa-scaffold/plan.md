@@ -15,6 +15,12 @@ dependency. `bootstrap.js` imports the WASI shim and the wasm bytes, exposes
 `globalThis.runCoinSelect`, and PureScript calls that function through a thin
 FFI module.
 
+The shared PureScript skill template still names `nodejs_20`, but the locked
+current nixpkgs refuses Node 20 as EOL/insecure. Per parent decision
+Q-001-nodejs20-insecure, this scaffold uses maintained `nodejs_22` for the
+build shell and bundler while keeping the runtime npm budget unchanged.
+Node itself is not shipped in the static SPA artifact.
+
 Use the default S1 text contract as the first rendered demo. The app should run
 that input on startup and render the returned stdout lines. S3 will add editable
 inputs; this ticket should stay a minimal scaffold plus working loader.
@@ -68,6 +74,9 @@ entry point must agree for HEAD to build.
 
 - `@bjorn3/browser_wasi_shim` API shape must match the skill pattern. Use exact
   version `0.4.2`.
+- The build shell uses `nodejs_22` because current nixpkgs marks `nodejs_20`
+  insecure/EOL. This is a documented exception to the stale skill template, not
+  a runtime dependency increase.
 - The gate writes a generated wasm file under `web/src/assets/`; it must remain
   untracked while still being present before bundling.
 - `spago bundle --offline` in Nix requires a committed `spago.lock`.
