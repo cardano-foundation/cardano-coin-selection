@@ -24,6 +24,6 @@
 
 ## Slice 3: Require the browser smoke in gate.sh
 
-- [ ] T029-S3 Orchestrator-owned: extend `gate.sh` to derive Playwright paths from Nix and run `web/smoke/interactive-ui.mjs` after web CI.
-- [ ] T029-S3 Orchestrator-owned: prove `./gate.sh`.
-- [ ] T029-S3 Orchestrator-owned: commit with subject `chore: require interactive smoke in gate` and trailer `Tasks: T029-S3`.
+- [X] T029-S3 Orchestrator-owned: extend `gate.sh` to derive Playwright paths from Nix and run `web/smoke/interactive-ui.mjs` after web CI.
+- [X] T029-S3 Orchestrator-owned: prove `./gate.sh`.
+- [X] T029-S3 Orchestrator-owned: commit with subject `chore: require interactive smoke in gate` and trailer `Tasks: T029-S3`.
