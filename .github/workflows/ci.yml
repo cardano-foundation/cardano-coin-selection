@@ -43,3 +43,56 @@ jobs:
         with:
           cachix-auth-token: "${{ secrets.CACHIX_AUTH_TOKEN }}"
       - run: nix develop github:paolino/dev-assets?dir=mkdocs -c mkdocs build --strict
+
+  wasm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: paolino/dev-assets/setup-nix@v0.0.1
+        with:
+          cachix-auth-token: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.ghc-wasm/.cabal/store
+            ~/.ghc-wasm/.cabal/packages
+          key: ghc-wasm-${{ runner.os }}-all-9-12-${{ hashFiles('cabal-wasm.project', 'cardano-coin-selection.cabal', 'flake.lock') }}
+          restore-keys: |
+            ghc-wasm-${{ runner.os }}-all-9-12-
+
+      - name: Capture native smoke output
+        run: |
+          mkdir -p "$RUNNER_TEMP/coin-select-smoke"
+          nix develop --quiet -c bash -c "
+            set -euo pipefail
+            cabal build -O0 exe:coin-select-smoke >&2
+            exe=\$(cabal list-bin -O0 exe:coin-select-smoke)
+            \"\$exe\"
+          " > "$RUNNER_TEMP/coin-select-smoke/native.out"
+
+      - name: Build WASM smoke
+        run: |
+          nix shell 'gitlab:haskell-wasm/ghc-wasm-meta?host=gitlab.haskell.org#all_9_12' --command bash -c "
+            set -euo pipefail
+            wasm32-wasi-cabal update
+            wasm32-wasi-cabal --project-file=cabal-wasm.project build exe:coin-select-smoke
+          "
+
+      - name: Run WASM smoke
+        run: |
+          set -euo pipefail
+          wasm=$(find dist-newstyle -name "coin-select-smoke.wasm" -type f | head -1)
+          test -n "$wasm"
+          printf 'COIN_SELECT_SMOKE_WASM=%s\n' "$wasm" >> "$GITHUB_ENV"
+          WASM_SMOKE="$wasm" nix shell 'gitlab:haskell-wasm/ghc-wasm-meta?host=gitlab.haskell.org#all_9_12' --command bash -c "wasmtime \"\$WASM_SMOKE\"" > "$RUNNER_TEMP/coin-select-smoke/wasm.out"
+
+      - name: Compare smoke outputs
+        run: diff -u "$RUNNER_TEMP/coin-select-smoke/native.out" "$RUNNER_TEMP/coin-select-smoke/wasm.out"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coin-select-smoke-wasm
+          path: ${{ env.COIN_SELECT_SMOKE_WASM }}
+          if-no-files-found: error
