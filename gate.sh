@@ -20,7 +20,12 @@ if [ -d app ]; then
     nix develop --quiet -c hlint app
 fi
 
-nix develop --quiet -c cabal run -O0 exe:coin-select-smoke >"$tmp_dir/native.out"
+nix develop --quiet -c bash -c '
+    set -euo pipefail
+    cabal build -O0 exe:coin-select-smoke >&2
+    exe=$(cabal list-bin -O0 exe:coin-select-smoke)
+    "$exe"
+' >"$tmp_dir/native.out"
 
 nix shell 'gitlab:haskell-wasm/ghc-wasm-meta?host=gitlab.haskell.org#all_9_12' \
     --command bash -c '
