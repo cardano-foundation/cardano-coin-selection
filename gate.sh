@@ -19,6 +19,12 @@ nix shell 'gitlab:haskell-wasm/ghc-wasm-meta?host=gitlab.haskell.org#all_9_12' -
   cd web
   nix develop --quiet -c just ci
 
+  playwright_core_path=$(nix build --no-link --print-out-paths nixpkgs#playwright-driver)
+  playwright_browsers_path=$(nix build --no-link --print-out-paths nixpkgs#playwright-driver.browsers)
+  PLAYWRIGHT_CORE_PATH="$playwright_core_path" \
+    PLAYWRIGHT_BROWSERS_PATH="$playwright_browsers_path" \
+    nix shell nixpkgs#nodejs_22 -c node smoke/interactive-ui.mjs
+
   runtime_count=$(
     jq '[.packages | to_entries[] | select(.key != "" and (.value.dev != true))] | length' package-lock.json
   )
