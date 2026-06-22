@@ -1,4 +1,4 @@
-cabal-version:      2.2
+cabal-version:      3.0
 name:               cardano-coin-selection
 version:            0.1.0.0
 synopsis:           Coin selection algorithms for the Cardano blockchain.
@@ -77,16 +77,12 @@ library
     , generic-lens            >=2.2.2.0 && <2.3
     , generics-sop            >=0.5.1.4 && <0.6
     , hashable                >=1.3     && <1.6
-    , hspec                   >=2.8     && <2.12
     , int-cast                >=0.2.0.0 && <0.3
     , lattices                >=2.2     && <2.3
     , math-functions          >=0.3.4.4 && <0.4
     , MonadRandom             >=0.6     && <0.7
     , monoid-subclasses       >=1.2.5.1 && <1.3
     , monoidmap               >=0.0.1.6 && <0.1
-    , pretty-simple           >=4.0     && <4.2
-    , QuickCheck              >=2.14    && <2.16
-    , quickcheck-classes      >=0.6     && <0.7
     , quiet                   >=0.2     && <0.3
     , random                  >=1.2     && <1.3
     , safe                    >=0.3.19  && <0.4
@@ -102,41 +98,53 @@ library
   exposed-modules:
     Cardano.CoinSelection
     Cardano.CoinSelection.Balance
-    Cardano.CoinSelection.Balance.Gen
     Cardano.CoinSelection.Collateral
     Cardano.CoinSelection.Context
-    Cardano.CoinSelection.Gen.Extra
     Cardano.CoinSelection.Internal.Numeric
     Cardano.CoinSelection.Size
-    Cardano.CoinSelection.Test.Laws
     Cardano.CoinSelection.Types.AssetId
-    Cardano.CoinSelection.Types.AssetId.Gen
     Cardano.CoinSelection.Types.AssetName
-    Cardano.CoinSelection.Types.AssetName.Gen
     Cardano.CoinSelection.Types.Coin
-    Cardano.CoinSelection.Types.Coin.Gen
     Cardano.CoinSelection.Types.Hash
     Cardano.CoinSelection.Types.TokenBundle
-    Cardano.CoinSelection.Types.TokenBundle.Gen
     Cardano.CoinSelection.Types.TokenMap
-    Cardano.CoinSelection.Types.TokenMap.Gen
     Cardano.CoinSelection.Types.TokenPolicyId
-    Cardano.CoinSelection.Types.TokenPolicyId.Gen
     Cardano.CoinSelection.Types.TokenQuantity
-    Cardano.CoinSelection.Types.TokenQuantity.Gen
     Cardano.CoinSelection.UTxOIndex
-    Cardano.CoinSelection.UTxOIndex.Gen
     Cardano.CoinSelection.UTxOIndex.Internal
     Cardano.CoinSelection.UTxOSelection
-    Cardano.CoinSelection.UTxOSelection.Gen
     Control.Monad.Random.NonRandom
 
--- Coin selection algorithm
--- Primitive types
--- Primitive type generators
--- QuickCheck utilities
--- Test utilities
--- Internal utilities
+library gens
+  import:          language, opts-lib
+  hs-source-dirs:  test/gens
+  build-depends:
+    , base                    >=4.14    && <5
+    , bytestring              >=0.10.6  && <0.13
+    , cardano-coin-selection
+    , containers              >=0.5     && <0.8
+    , generics-sop            >=0.5.1.4 && <0.6
+    , hspec                   >=2.8     && <2.12
+    , int-cast                >=0.2.0.0 && <0.3
+    , pretty-simple           >=4.0     && <4.2
+    , QuickCheck              >=2.14    && <2.16
+    , quickcheck-classes      >=0.6     && <0.7
+    , text                    >=1.2     && <2.2
+
+  exposed-modules:
+    Cardano.CoinSelection.Balance.Gen
+    Cardano.CoinSelection.Gen.Extra
+    Cardano.CoinSelection.Test.Laws
+    Cardano.CoinSelection.Types.AssetId.Gen
+    Cardano.CoinSelection.Types.AssetName.Gen
+    Cardano.CoinSelection.Types.Coin.Gen
+    Cardano.CoinSelection.Types.TokenBundle.Gen
+    Cardano.CoinSelection.Types.TokenMap.Gen
+    Cardano.CoinSelection.Types.TokenPolicyId.Gen
+    Cardano.CoinSelection.Types.TokenQuantity.Gen
+    Cardano.CoinSelection.UTxOIndex.Gen
+    Cardano.CoinSelection.UTxOSelection.Gen
+
 executable coin-select-smoke
   import:         language, opts-exe
   hs-source-dirs: app
@@ -167,6 +175,7 @@ test-suite unit
     , base
     , bytestring
     , cardano-coin-selection
+    , cardano-coin-selection:gens
     , containers
     , generic-lens
     , generics-sop
