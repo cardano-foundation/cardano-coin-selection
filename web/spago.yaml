@@ -1,0 +1,19 @@
+package:
+  name: cardano-coin-selection-spa
+  dependencies:
+    - prelude
+    - effect
+    - aff
+    - aff-promise
+    - either
+    - exceptions
+    - halogen
+  bundle:
+    module: Main
+    outfile: dist/index.js
+    platform: browser
+    type: app
+
+workspace:
+  packageSet:
+    registry: 72.1.0
