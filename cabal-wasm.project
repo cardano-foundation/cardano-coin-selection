@@ -16,4 +16,7 @@ package ram
   ghc-options: -optc-D_WASI_EMULATED_MMAN -optl-lwasi-emulated-mman
   hsc2hs-options: --cflag=-D_WASI_EMULATED_MMAN --lflag=-lwasi-emulated-mman
 
+package int-cast
+  ghc-options: -DHTYPE_SIG_ATOMIC_T=HTYPE_INT
+
 tests: False
