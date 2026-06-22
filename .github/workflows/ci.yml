@@ -72,12 +72,29 @@ jobs:
             \"\$exe\"
           " > "$RUNNER_TEMP/coin-select-smoke/native.out"
 
+      - name: Capture native text output
+        run: |
+          mkdir -p "$RUNNER_TEMP/coin-select"
+          cat > "$RUNNER_TEMP/coin-select/input.txt" <<'EOF'
+          utxo input-1 2000000
+          utxo input-2 3000000
+          utxo input-3 5000000
+          output target-address 4500000
+          EOF
+          nix develop --quiet -c bash -c '
+            set -euo pipefail
+            cabal build -O0 exe:coin-select >&2
+            exe=$(cabal list-bin -O0 exe:coin-select)
+            "$exe" < "$1"
+          ' bash "$RUNNER_TEMP/coin-select/input.txt" > "$RUNNER_TEMP/coin-select/native.out"
+
       - name: Build WASM smoke
         run: |
           nix shell 'gitlab:haskell-wasm/ghc-wasm-meta?host=gitlab.haskell.org#all_9_12' --command bash -c "
             set -euo pipefail
             wasm32-wasi-cabal update
             wasm32-wasi-cabal --project-file=cabal-wasm.project build exe:coin-select-smoke
+            wasm32-wasi-cabal --project-file=cabal-wasm.project build exe:coin-select
           "
 
       - name: Run WASM smoke
@@ -91,8 +108,21 @@ jobs:
       - name: Compare smoke outputs
         run: diff -u "$RUNNER_TEMP/coin-select-smoke/native.out" "$RUNNER_TEMP/coin-select-smoke/wasm.out"
 
+      - name: Run WASM text executable
+        run: |
+          set -euo pipefail
+          wasm=$(find dist-newstyle -name "coin-select.wasm" -type f | head -1)
+          test -n "$wasm"
+          printf 'COIN_SELECT_WASM=%s\n' "$wasm" >> "$GITHUB_ENV"
+          WASM_SELECT="$wasm" SAMPLE_INPUT="$RUNNER_TEMP/coin-select/input.txt" nix shell 'gitlab:haskell-wasm/ghc-wasm-meta?host=gitlab.haskell.org#all_9_12' --command bash -c "wasmtime \"\$WASM_SELECT\" < \"\$SAMPLE_INPUT\"" > "$RUNNER_TEMP/coin-select/wasm.out"
+
+      - name: Compare text outputs
+        run: diff -u "$RUNNER_TEMP/coin-select/native.out" "$RUNNER_TEMP/coin-select/wasm.out"
+
       - uses: actions/upload-artifact@v4
         with:
-          name: coin-select-smoke-wasm
-          path: ${{ env.COIN_SELECT_SMOKE_WASM }}
+          name: coin-select-wasm
+          path: |
+            ${{ env.COIN_SELECT_SMOKE_WASM }}
+            ${{ env.COIN_SELECT_WASM }}
           if-no-files-found: error

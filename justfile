@@ -19,7 +19,7 @@ format:
     #!/usr/bin/env bash
     set -euo pipefail
     for i in {1..3}; do
-        fourmolu -i lib test
+        fourmolu -i app lib test
     done
     cabal-fmt -i *.cabal
     nixfmt flake.nix nix/*.nix
@@ -27,7 +27,7 @@ format:
 # Run hlint
 hlint:
     #!/usr/bin/env bash
-    hlint lib test
+    hlint app lib test
 
 # Build all components
 build:
@@ -52,6 +52,10 @@ CI:
     set -euo pipefail
     just build
     just unit
-    fourmolu -m check lib test
-    hlint lib test
+    fourmolu -m check app lib test
+    hlint app lib test
     nixfmt --check flake.nix nix/*.nix
+
+# Lowercase alias for local and CI callers
+ci:
+    just CI

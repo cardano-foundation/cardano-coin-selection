@@ -149,6 +149,18 @@ executable coin-select-smoke
   import:         language, opts-exe
   hs-source-dirs: app
   main-is:        Main.hs
+  other-modules:  CoinSelectionDemo
+  build-depends:
+    , base
+    , cardano-coin-selection
+    , containers
+    , transformers
+
+executable coin-select
+  import:         language, opts-exe
+  hs-source-dirs: app
+  main-is:        CoinSelect.hs
+  other-modules:  CoinSelectionDemo
   build-depends:
     , base
     , cardano-coin-selection
@@ -179,16 +191,16 @@ test-suite unit
     , containers
     , generic-lens
     , generics-sop
-    , hspec                   >=2.8   && <2.12
-    , hspec-core              >=2.8   && <2.12
+    , hspec                        >=2.8   && <2.12
+    , hspec-core                   >=2.8   && <2.12
     , int-cast
     , lattices
     , MonadRandom
     , monoid-subclasses
-    , pretty-simple           >=4.0   && <4.2
+    , pretty-simple                >=4.0   && <4.2
     , QuickCheck
-    , quickcheck-classes      >=0.6   && <0.7
-    , quickcheck-quid         >=0.0.1 && <0.1
+    , quickcheck-classes           >=0.6   && <0.7
+    , quickcheck-quid              >=0.0.1 && <0.1
     , safe
     , text
     , transformers
