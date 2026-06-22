@@ -1,4 +1,4 @@
-# Specification: JSON stdin coin selection executable
+# Specification: text stdin coin selection executable
 
 ## User Story
 
@@ -10,37 +10,28 @@ without relying on the current hardcoded smoke fixture.
 ## Functional Requirements
 
 - FR-001: The project must provide an executable named `coin-select`.
-- FR-002: `coin-select` must read a JSON document from stdin with this stable
-  shape:
+- FR-002: `coin-select` must read a line-oriented text document from stdin
+  with this stable shape:
 
-  ```json
-  {
-    "utxos": [
-      { "id": "input-1", "lovelace": 2000000 }
-    ],
-    "outputs": [
-      { "address": "target-address", "lovelace": 4500000 }
-    ]
-  }
+  ```text
+  utxo input-1 2000000
+  output target-address 4500000
   ```
+
+  Each non-empty line has space-separated fields. UTxO ids and addresses must
+  not contain whitespace. Lovelace fields must be non-negative base-10
+  integers.
 
 - FR-003: `coin-select` must construct `SelectionParams` equivalent to the
   existing `coin-select-smoke` fixture, except that UTxOs and outputs come from
   stdin.
 - FR-004: Selection must run in `NonRandom` with `SelectionStrategyMinimal`.
 - FR-005: Successful output must be deterministic and byte-identical between
-  native and wasm runs for the same input. The required result shape is compact
-  JSON:
+  native and wasm runs for the same input. The required output shape is:
 
-  ```json
-  {
-    "selectedInputs": [
-      { "id": "input-1", "lovelace": 2000000 }
-    ],
-    "change": [
-      { "lovelace": 500000 }
-    ]
-  }
+  ```text
+  selected input-1 2000000
+  change 500000
   ```
 
 - FR-006: Parse or selection failure must exit non-zero and print a concise
@@ -54,9 +45,8 @@ without relying on the current hardcoded smoke fixture.
 
 ## Constraints
 
-- JSON is the planned SPA contract. If adding `aeson` proves incompatible with
-  wasm or materially hostile to the wasm dependency surface, stop and write a
-  parent Q-file before switching to a text format.
+- Use the text contract above to keep the wasm dependency surface lean. Do not
+  add JSON dependencies such as `aeson` for this executable.
 - Keep the library API focused on coin-selection primitives; CLI parsing and
   rendering should stay in the executable layer unless tests require a narrowly
   justified helper.
@@ -64,9 +54,9 @@ without relying on the current hardcoded smoke fixture.
 
 ## Acceptance Criteria
 
-- `echo '<sample-json>' | cabal run exe:coin-select` prints the deterministic
-  selection JSON.
-- `echo '<sample-json>' | wasmtime coin-select.wasm` prints byte-identical
+- `printf '<sample-text>' | cabal run exe:coin-select` prints the deterministic
+  selection text.
+- `printf '<sample-text>' | wasmtime coin-select.wasm` prints byte-identical
   output.
 - `./gate.sh` passes at branch HEAD.
 - Pull request #32 is ready for review only after GitHub checks `build`,
