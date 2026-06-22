@@ -17,16 +17,23 @@ WASI-compatible options while leaving native builds unchanged.
 - Configure `package ram` with WASI mmap emulation:
   `-optc-D_WASI_EMULATED_MMAN`, `-optl-lwasi-emulated-mman`,
   `--cflag=-D_WASI_EMULATED_MMAN`, and `--lflag=-lwasi-emulated-mman`.
+- Pin the patched `paolino/ram` fork at
+  `e6d863d240246e0a1af3dd12cff7047f696f81ea` with a nix32 `--sha256` so
+  `ram` builds past the WASI `memcpy`/`memset` linker mismatch.
 - Disable tests in the WASM project with `tests: False`.
-- If test-suite dependencies still pollute the WASM solve, add a manual
-  `wasm` flag to `cardano-coin-selection.cabal` that makes the test-suite
-  `buildable: False` only when the flag is enabled, and pass `-fwasm` from
-  `cabal-wasm.project`.
+- Add a manual `wasm` flag to `cardano-coin-selection.cabal` that makes the
+  test-suite `buildable: False` only when the flag is enabled, and pass
+  `+wasm` from `cabal-wasm.project`.
 - Keep native builds and the existing `just CI` recipe unaffected.
+- Do not fix `int-cast`; that blocker belongs to issue #20.
 
 ## Acceptance
 
-- `nix shell 'gitlab:haskell-wasm/ghc-wasm-meta?host=gitlab.haskell.org#all_9_12' --command bash -lc 'wasm32-wasi-cabal --project-file=cabal-wasm.project build lib:cardano-coin-selection'`
-  succeeds.
 - `nix develop --quiet -c just CI` succeeds after the WASM project changes.
-- `./gate.sh` succeeds and includes both native CI and the WASM library build.
+- `wasm32-wasi-cabal --project-file=cabal-wasm.project build ram` succeeds,
+  proving the patched `ram` fork links with WASI.
+- The library WASM build resolves and builds past `ram`, then fails only on
+  `int-cast-0.2.0.0` with the known `HTYPE_SIG_ATOMIC_T` error delegated to
+  issue #20.
+- `./gate.sh` succeeds by checking native CI, the `ram` WASM build, and the
+  documented `int-cast` blocker shape.
