@@ -22,6 +22,7 @@ theme:
 nav:
   - Home: index.md
   - Getting Started: getting-started.md
+  - Browser Demo: browser-demo.md
   - Tutorial: tutorial.md
   - Concepts:
       - UTxO Model: concepts/utxo-model.md

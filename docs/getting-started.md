@@ -19,6 +19,33 @@ repository cardano-haskell-packages
   secure: True
 ```
 
+## Run in the browser
+
+The hosted browser demo is available at
+<https://cardano-foundation.github.io/cardano-coin-selection/demo/>.
+
+The demo runs the stdin-driven `coin-select.wasm` executable. The input is a
+line-oriented text document: use `utxo <id> <lovelace>` for available UTxOs and
+`output <address> <lovelace>` for target outputs. Blank lines are ignored.
+
+```text
+utxo input-1 2000000
+utxo input-2 3000000
+utxo input-3 5000000
+output target-address 4500000
+```
+
+To run the same executable locally, save the text as `input.txt` and pass it to
+`wasmtime` on stdin:
+
+```sh
+wasmtime coin-select.wasm < input.txt
+```
+
+In the browser bundle, `web/src/bootstrap.js` imports `coin-select.wasm` and
+uses `@bjorn3/browser_wasi_shim` to provide WASI stdin, stdout, and stderr
+around the same executable.
+
 ## Module imports
 
 The library is designed around qualified imports:

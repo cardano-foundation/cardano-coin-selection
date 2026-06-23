@@ -16,6 +16,9 @@ ecosystem dependencies — only Hackage packages.
 Full documentation is available at
 **<https://cardano-foundation.github.io/cardano-coin-selection/>**.
 
+Run the browser demo at
+**<https://cardano-foundation.github.io/cardano-coin-selection/demo/>**.
+
 ## License
 
 [Apache-2.0](LICENSE) — Copyright 2018-2022 IOHK, 2023-2026 Cardano Foundation.

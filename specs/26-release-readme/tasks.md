@@ -2,18 +2,24 @@
 
 ## Slice 1: Browser run documentation
 
-- [ ] T026-S1 Add a README "Run in the browser" entry that links the live demo
+- [X] T026-S1 Add a README "Run in the browser" entry that links the live demo
   at `https://cardano-foundation.github.io/cardano-coin-selection/demo/`.
-- [ ] T026-S1 Add a docs "Run in the browser" section in
+- [X] T026-S1 Add a docs "Run in the browser" section in
   `docs/getting-started.md`.
-- [ ] T026-S1 Document the `coin-select` stdin text shape with a minimal sample.
-- [ ] T026-S1 Document local `wasmtime` execution of `coin-select.wasm`.
-- [ ] T026-S1 Document browser execution through
+- [X] T026-S1 Add a MkDocs `Browser Demo` page at `docs/browser-demo.md` and
+  nav entry that links to the deployed `/demo/` static app without generating
+  a colliding `/demo/` Markdown page.
+- [X] T026-S1 Cross-reference `docs/architecture/wasm-portability.md` from the
+  browser demo page and explain that the same library compiled to WASM powers
+  the demo.
+- [X] T026-S1 Document the `coin-select` stdin text shape with a minimal sample.
+- [X] T026-S1 Document local `wasmtime` execution of `coin-select.wasm`.
+- [X] T026-S1 Document browser execution through
   `@bjorn3/browser_wasi_shim`, matching `web/src/bootstrap.js`.
-- [ ] T026-S1 Add `workflow_dispatch` to `.github/workflows/ci.yml` so release
+- [X] T026-S1 Add `workflow_dispatch` to `.github/workflows/ci.yml` so release
   PR #1 checks can be started manually on `release-please--branches--main`.
-- [ ] T026-S1 Run `./gate.sh`.
-- [ ] T026-S1 Commit with subject `docs: add browser run instructions` and
+- [X] T026-S1 Run `./gate.sh`.
+- [X] T026-S1 Commit with subject `docs: add browser run instructions` and
   trailer `Tasks: T026-S1`.
 
 ## Release operations
