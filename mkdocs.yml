@@ -23,6 +23,7 @@ nav:
   - Home: index.md
   - Getting Started: getting-started.md
   - Browser Demo: browser-demo.md
+  - Browser WASM: browser-wasm.md
   - Tutorial: tutorial.md
   - Concepts:
       - UTxO Model: concepts/utxo-model.md

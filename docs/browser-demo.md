@@ -1,5 +1,8 @@
 # Browser Demo
 
+For a short public summary of the browser-runnable WASM work, see
+[Browser WASM](browser-wasm.md).
+
 Open the hosted browser demo:
 
 <https://cardano-foundation.github.io/cardano-coin-selection/demo/>

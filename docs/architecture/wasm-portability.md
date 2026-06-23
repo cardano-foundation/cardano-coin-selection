@@ -2,6 +2,9 @@
 
 ## Result summary
 
+For the public summary of the browser-runnable WASM build and hosted demo, see
+[Browser WASM](../browser-wasm.md).
+
 The library has no direct `foreign import` declarations under `lib/`.
 Among the direct dependencies in the library stanza, `memory` is the only
 known WASM-hostile dependency identified by this audit. The repository-local
