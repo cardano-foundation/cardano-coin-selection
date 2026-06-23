@@ -10,16 +10,18 @@
 - [ ] T026-S1 Document local `wasmtime` execution of `coin-select.wasm`.
 - [ ] T026-S1 Document browser execution through
   `@bjorn3/browser_wasi_shim`, matching `web/src/bootstrap.js`.
+- [ ] T026-S1 Add `workflow_dispatch` to `.github/workflows/ci.yml` so release
+  PR #1 checks can be started manually on `release-please--branches--main`.
 - [ ] T026-S1 Run `./gate.sh`.
 - [ ] T026-S1 Commit with subject `docs: add browser run instructions` and
   trailer `Tasks: T026-S1`.
 
 ## Release operations
 
-- [ ] T026-R1 Resolve Q-001 and get release PR #1 checks green at `0.1.0`.
-- [ ] T026-R1 Q-file parent approval before merging release PR #1.
-- [ ] T026-R1 After parent approval, merge release PR #1 and verify
-  `v0.1.0` tag + GitHub Release exist.
+- [X] T026-R1 Resolve Q-001: PR #36 carries `workflow_dispatch`, and tag-cut
+  approval is granted.
+- [ ] T026-R1 After PR #36 is merged and release PR #1 is green at `0.1.0`,
+  merge release PR #1 and verify `v0.1.0` tag + GitHub Release exist.
 - [ ] T026-R1 Attach `coin-select.wasm` to the `v0.1.0` GitHub Release.
 
 ## Finalization
