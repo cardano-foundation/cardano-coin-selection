@@ -8,9 +8,9 @@ Issue #26 has two independent tracks:
 2. Release-please operations on PR #1, ending in `v0.1.0` and a
    `coin-select.wasm` GitHub Release asset.
 
-The docs PR can proceed while release PR unblocking waits on Q-001, because
-the release branch currently lacks the `workflow_dispatch` trigger that the
-ticket brief expected.
+Q-001 approved widening PR #36 to add `workflow_dispatch` to `CI`, because the
+release branch currently lacks the manual trigger that the ticket brief
+expected.
 
 ## Slice Breakdown
 
@@ -20,6 +20,7 @@ Driver/navigator owned files:
 
 - `README.md`
 - `docs/getting-started.md`
+- `.github/workflows/ci.yml`
 
 The slice adds concise user-facing instructions for:
 
@@ -28,6 +29,7 @@ The slice adds concise user-facing instructions for:
 - local `wasmtime coin-select.wasm < input.txt`,
 - browser integration through `@bjorn3/browser_wasi_shim`, matching
   `web/src/bootstrap.js`.
+- `workflow_dispatch` under the existing `CI` workflow `on:` block.
 
 Proof:
 
@@ -47,5 +49,6 @@ The ticket-orchestrator owns release operations:
 - Q-file the parent before merge/tag,
 - after approval, merge release PR #1 and upload `coin-select.wasm`.
 
-Q-001 currently blocks the exact CI-dispatch path because `CI` lacks
-`workflow_dispatch`.
+Tag-cut approval has been granted by the epic owner relay. After PR #36 merges,
+the orchestrator proceeds through release PR #1, tag creation, and release asset
+upload without a second tag-approval Q-file.

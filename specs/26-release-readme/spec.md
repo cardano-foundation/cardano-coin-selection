@@ -16,6 +16,8 @@ first public release is cut.
   executable.
 - The docs mention that the browser bundle uses `@bjorn3/browser_wasi_shim`
   to provide WASI stdin/stdout around `coin-select.wasm`.
+- `CI` can be dispatched manually on the release-please branch so release PR
+  #1 can satisfy required checks despite being bot-authored.
 - Strict MkDocs build passes.
 
 ## Release Acceptance
@@ -28,5 +30,4 @@ first public release is cut.
 ## Out of Scope
 
 - Hackage publication.
-- Haskell source, cabal, Nix, web application, or CI changes unless parent
-  answers Q-001 by explicitly widening scope for the CI dispatch unblock.
+- Haskell source, cabal, Nix, web application, or release workflow changes.
