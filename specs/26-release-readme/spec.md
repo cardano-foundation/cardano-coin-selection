@@ -11,6 +11,10 @@ first public release is cut.
 - README links the public documentation and the live browser demo at
   `https://cardano-foundation.github.io/cardano-coin-selection/demo/`.
 - Project documentation includes a "Run in the browser" section.
+- The MkDocs site includes a navigation entry for a browser demo page that
+  links to the deployed `/demo/` static app without colliding with that path.
+- The demo page cross-references the WASM portability notes and states that
+  the same library compiled to WASM powers the demo.
 - The docs explain the stdin-driven `coin-select.wasm` asset used by the SPA.
 - The docs include a local `wasmtime` invocation shape for the `coin-select`
   executable.

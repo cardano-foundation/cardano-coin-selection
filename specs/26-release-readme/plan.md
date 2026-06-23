@@ -20,6 +20,8 @@ Driver/navigator owned files:
 
 - `README.md`
 - `docs/getting-started.md`
+- `docs/browser-demo.md`
+- `mkdocs.yml`
 - `.github/workflows/ci.yml`
 
 The slice adds concise user-facing instructions for:
@@ -29,7 +31,13 @@ The slice adds concise user-facing instructions for:
 - local `wasmtime coin-select.wasm < input.txt`,
 - browser integration through `@bjorn3/browser_wasi_shim`, matching
   `web/src/bootstrap.js`.
+- a MkDocs `Browser Demo` page that links to the deployed `/demo/` static app
+  and cross-references the WASM portability audit.
 - `workflow_dispatch` under the existing `CI` workflow `on:` block.
+
+The MkDocs page is `docs/browser-demo.md`, not `docs/demo.md`, so MkDocs does
+not generate a page at `/demo/` and collide with the static SPA copied there by
+the deploy workflow.
 
 Proof:
 
