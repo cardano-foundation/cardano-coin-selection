@@ -1,0 +1,11 @@
+- main [ref=e2]:
+  - generic [ref=e3]:
+    - heading "Cardano Coin Selection" [level=1] [ref=e4]
+    - paragraph [ref=e5]: Ready
+  - generic [ref=e6]:
+    - generic [ref=e7]:
+      - heading "Input" [level=2] [ref=e8]
+      - generic [ref=e9]: utxo input-1 2000000 utxo input-2 3000000 output target-address 4500000
+    - generic [ref=e10]:
+      - heading "Output" [level=2] [ref=e11]
+      - generic [ref=e12]: selected input-1 2000000 selected input-2 3000000 change 500000
