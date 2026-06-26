@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:,">
+    <title>Cardano Coin Selection</title>
+    <style>
+      :root {
+        color: #202428;
+        background: #f4f6f5;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      .app-shell {
+        min-height: 100vh;
+        padding: 28px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .app-header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+        border-bottom: 1px solid #d9dee2;
+        padding-bottom: 18px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 1.6rem;
+        font-weight: 700;
+      }
+
+      .status {
+        margin: 0;
+        color: #50615c;
+        font-size: 0.95rem;
+      }
+
+      .status.error {
+        color: #a43d2a;
+      }
+
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 20px;
+      }
+
+      .panel {
+        min-width: 0;
+        border: 1px solid #d9dee2;
+        border-radius: 8px;
+        background: #ffffff;
+        overflow: hidden;
+      }
+
+      .panel h2 {
+        margin: 0;
+        padding: 14px 16px;
+        border-bottom: 1px solid #e4e8eb;
+        font-size: 0.95rem;
+      }
+
+      .input-form,
+      .result-body,
+      .result-status,
+      .error-box {
+        padding: 16px;
+      }
+
+      .input-form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .field-label {
+        color: #394742;
+        font-size: 0.9rem;
+        font-weight: 650;
+      }
+
+      .preset-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .preset-button,
+      .secondary-button {
+        border: 1px solid #b9c7c2;
+        border-radius: 6px;
+        background: #f7faf9;
+        color: #26332f;
+        cursor: pointer;
+        font-weight: 700;
+        min-height: 36px;
+        padding: 0 12px;
+      }
+
+      .preset-button:hover,
+      .preset-button:focus-visible,
+      .secondary-button:hover,
+      .secondary-button:focus-visible {
+        border-color: #27745f;
+        background: #eef7f4;
+      }
+
+      .target-row {
+        align-items: center;
+        display: grid;
+        gap: 8px;
+        grid-template-columns: minmax(120px, 0.35fr) minmax(0, 1fr);
+      }
+
+      .target-input,
+      .row-input {
+        width: 100%;
+        border: 1px solid #cbd5d1;
+        border-radius: 6px;
+        min-width: 0;
+        padding: 9px 10px;
+        background: #fbfcfc;
+        color: #202428;
+        font: 0.95rem/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas,
+          "Liberation Mono", monospace;
+      }
+
+      .target-input:focus,
+      .row-input:focus {
+        outline: 3px solid #b7ddd1;
+        border-color: #27745f;
+        background: #ffffff;
+      }
+
+      .utxo-toolbar {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .utxo-toolbar h3 {
+        margin: 0;
+        color: #394742;
+        font-size: 0.92rem;
+      }
+
+      .utxo-table,
+      .result-table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        font-size: 0.95rem;
+      }
+
+      .utxo-table th,
+      .utxo-table td,
+      .result-table th,
+      .result-table td {
+        border-bottom: 1px solid #e4e8eb;
+        padding: 10px 8px;
+        text-align: left;
+        vertical-align: middle;
+      }
+
+      .utxo-table th,
+      .result-table th {
+        color: #394742;
+        font-size: 0.82rem;
+        font-weight: 750;
+        text-transform: uppercase;
+      }
+
+      .utxo-table th:nth-child(1) {
+        width: 30%;
+      }
+
+      .utxo-table th:nth-child(2) {
+        width: 30%;
+      }
+
+      .utxo-table th:nth-child(3) {
+        width: 22%;
+      }
+
+      .utxo-table th:nth-child(4) {
+        width: 18%;
+      }
+
+      .utxo-row.selected {
+        background: #f0faf4;
+        box-shadow: inset 4px 0 0 #2a7a4b;
+      }
+
+      .selected-badge,
+      .available-badge {
+        border-radius: 999px;
+        display: inline-flex;
+        max-width: 100%;
+        min-height: 26px;
+        align-items: center;
+        padding: 0 9px;
+        font-size: 0.8rem;
+        font-weight: 750;
+        white-space: nowrap;
+      }
+
+      .selected-badge {
+        background: #d9f0df;
+        color: #245d38;
+      }
+
+      .available-badge {
+        background: #edf0f2;
+        color: #53605d;
+      }
+
+      .remove-cell {
+        text-align: right;
+      }
+
+      .icon-button {
+        border: 1px solid #c9d0d4;
+        border-radius: 6px;
+        background: #ffffff;
+        color: #35413d;
+        cursor: pointer;
+        font-size: 0.82rem;
+        font-weight: 700;
+        min-height: 32px;
+        padding: 0 8px;
+      }
+
+      .icon-button:hover:not(:disabled),
+      .icon-button:focus-visible {
+        border-color: #9c3f2e;
+        background: #fff6f2;
+        color: #8f2f1f;
+      }
+
+      .icon-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.46;
+      }
+
+      .action-row {
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .run-button {
+        border: 1px solid #1f6f5b;
+        border-radius: 6px;
+        background: #1f6f5b;
+        color: #ffffff;
+        cursor: pointer;
+        font-weight: 700;
+        min-height: 40px;
+        padding: 0 16px;
+      }
+
+      .run-button:hover:not(:disabled),
+      .run-button:focus-visible {
+        background: #185947;
+        border-color: #185947;
+      }
+
+      .run-button:focus-visible {
+        outline: 3px solid #b7ddd1;
+        outline-offset: 2px;
+      }
+
+      .run-button:disabled {
+        cursor: wait;
+        opacity: 0.72;
+      }
+
+      .result-status {
+        color: #50615c;
+      }
+
+      .error-box {
+        background: #fff6f2;
+        border-top: 1px solid #f1c7b8;
+        color: #8f2f1f;
+        line-height: 1.5;
+      }
+
+      .result-body {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .result-table td {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas,
+          "Liberation Mono", monospace;
+      }
+
+      .totals-row {
+        display: grid;
+        gap: 10px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .total-item {
+        align-items: baseline;
+        background: #f7faf9;
+        border: 1px solid #d6e2de;
+        border-radius: 6px;
+        display: flex;
+        gap: 8px;
+        justify-content: space-between;
+        min-width: 0;
+        padding: 10px;
+      }
+
+      .total-label {
+        color: #394742;
+        font-weight: 700;
+      }
+
+      .total-value {
+        color: #174f42;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas,
+          "Liberation Mono", monospace;
+        font-size: 1rem;
+      }
+
+      @media (max-width: 760px) {
+        .app-shell {
+          padding: 20px;
+        }
+
+        .workspace {
+          grid-template-columns: 1fr;
+        }
+
+        .target-row {
+          grid-template-columns: 1fr;
+        }
+
+        .totals-row {
+          grid-template-columns: 1fr;
+        }
+
+        .total-item {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 4px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <script src="./index.js" defer></script>
+  </body>
+</html>
